@@ -1,8 +1,9 @@
 name: Builds, tests & co
 
 on:
-  - pull_request
-  - push
+  push:
+    branch_ignores:
+      - main
 
 jobs:
   build:
