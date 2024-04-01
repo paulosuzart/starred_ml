@@ -5,11 +5,11 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github paulosuzart/starred_ml))
 
-(authors "Author Name")
+(authors "Paulo Suzart")
 
-(maintainers "Maintainer Name")
+(maintainers "Paulo Suzart")
 
 (license LICENSE)
 
@@ -17,10 +17,10 @@
 
 (package
  (name starred_ml)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "Generates a awesome list makdown")
+ (description "Turn your starred items into a awesomeness list of repos")
  (depends ocaml dune)
  (tags
-  (topics "to describe" your project)))
+  (topics ocaml github makdown)))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
