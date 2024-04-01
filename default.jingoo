@@ -1,0 +1,14 @@
+Awesome Starts
+===
+
+> A curated list of Github starts! Geberated by ____
+
+Contents
+---
+
+{%- for item in by_topic -%}
+## {{ item.topic }}
+{%- for repo in item.starred %}
+   - [{{ repo.name }}]({{ repo.url }}): {{ repo.description }}
+{% endfor -%}
+{% endfor -%}
