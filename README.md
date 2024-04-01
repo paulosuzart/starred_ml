@@ -1,4 +1,4 @@
-Starred_ml - Github Awessome list based on starred proejct
+Starred_ml - Github Awesome list based on starred proejct
 ---
 
 Are you a compulsive Github stargazer? `Starred_ml` is here for you! It will access Github `https://api.github.com/user/starred` API and fetch all starred repositories and dump a mardown that you can use as
@@ -8,12 +8,8 @@ Are you a compulsive Github stargazer? `Starred_ml` is here for you! It will acc
 
 ```shell
 TOKEN={{your github personal token}} opam Starred_ml 
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
 ```
+
 Will output something liket this:  
 
 ```mardkown
@@ -40,8 +36,6 @@ Languages
  ...
 ```
 
-<<<<<<< Updated upstream
-=======
 Templating
 ---
 
@@ -56,9 +50,6 @@ The availabe variables are:
          - `url` - Github url
          - `description` - repository description
 
-
-
->>>>>>> Stashed changes
 Similar projects
 ---
 While developing `Starred_ml` I found at least one alternative:
