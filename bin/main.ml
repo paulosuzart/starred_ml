@@ -37,12 +37,20 @@ open Jingoo
 
 let output models = Jg_template.from_file "default.jingoo" ~models
 
+let unique_lang (bz : (string * starred list) list) =
+  let rec unique' b acc =
+    match b with [] -> acc | (lang, _) :: xs -> unique' xs (lang :: acc)
+  in
+  let u = unique' bz [] |> List.rev in
+  Jg_types.Tlist (List.map (fun w -> Jg_types.Tstr w) u)
+
 let print_content s =
   let items = Github.from_string s in
   let bz = Github.by_language items in
+  let unique_languages = unique_lang bz in
   let m =
     List.map
-      (fun (language, items) ->
+      (fun (language, items') ->
         Jg_types.Tobj
           [
             ("language", Jg_types.Tstr language);
@@ -59,11 +67,11 @@ let print_content s =
                            | Some d -> Jg_types.Tstr d
                            | None -> Jg_types.Tnull );
                        ])
-                   items) );
+                   items') );
           ])
       bz
   in
-  output [ ("by_language", Jg_types.Tlist m) ]
+  output [ ("languages", unique_languages); ("by_language", Jg_types.Tlist m) ]
 
 let () =
   Eio_main.run @@ fun env ->

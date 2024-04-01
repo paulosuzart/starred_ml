@@ -20,6 +20,7 @@ let group_by_first lst =
       Hashtbl.replace ht key (value :: values))
     lst;
   Hashtbl.fold (fun key values acc -> (key, List.rev values) :: acc) ht []
+  |> List.sort (fun (c1, _) (c2, _) -> Stdlib.compare c1 c2)
 
 let by_language s =
   let bz =
