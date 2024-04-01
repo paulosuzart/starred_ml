@@ -6,8 +6,8 @@ Awesome Starts
 Contents
 ---
 
-{%- for item in by_topic -%}
-## {{ item.topic }}
+{% for item in by_language -%}
+## {{ item.language }}
 {%- for repo in item.starred %}
    - [{{ repo.name }}]({{ repo.url }}): {{ repo.description }}
 {% endfor -%}

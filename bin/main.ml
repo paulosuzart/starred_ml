@@ -42,10 +42,10 @@ let print_content s =
   let bz = Github.by_language items in
   let m =
     List.map
-      (fun (topic, items) ->
+      (fun (language, items) ->
         Jg_types.Tobj
           [
-            ("topic", Jg_types.Tstr topic);
+            ("language", Jg_types.Tstr language);
             ( "starred",
               Jg_types.Tlist
                 (List.map
@@ -63,7 +63,7 @@ let print_content s =
           ])
       bz
   in
-  output [ ("by_topic", Jg_types.Tlist m) ]
+  output [ ("by_language", Jg_types.Tlist m) ]
 
 let () =
   Eio_main.run @@ fun env ->
