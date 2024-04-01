@@ -21,9 +21,11 @@ let group_by_first lst =
     lst;
   Hashtbl.fold (fun key values acc -> (key, List.rev values) :: acc) ht []
 
-let by_topic s =
+let by_language s =
   let bz =
-    List.map (fun i -> List.map (fun topic -> (topic, i)) i.topics) s
-    |> List.flatten
+    List.map
+      (fun i ->
+        match i.language with Some l -> (l, i) | None -> ("Not set", i))
+      s
   in
   group_by_first bz

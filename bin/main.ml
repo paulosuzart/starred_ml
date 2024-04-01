@@ -39,7 +39,7 @@ let output models = Jg_template.from_file "default.jingoo" ~models
 
 let print_content s =
   let items = Github.from_string s in
-  let bz = Github.by_topic items in
+  let bz = Github.by_language items in
   let m =
     List.map
       (fun (topic, items) ->

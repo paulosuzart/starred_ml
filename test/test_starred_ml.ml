@@ -24,8 +24,8 @@ let test_group () =
   in
   Alcotest.(check starred_testable)
     "Repos are grouped by topic"
-    [ ("Flow", [ sample ]) ]
-    (by_topic [ sample ])
+    [ ("Java", [ sample ]) ]
+    (by_language [ sample ])
 
 let () =
   run "Github" [ ("group_by-case", [ test_case "Group" `Quick test_group ]) ]
