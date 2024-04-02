@@ -39,7 +39,7 @@ Languages
 Templating
 ---
 
-`Starred_ml` uses [jingoo][https://github.com/tategakibunko/jingoo] as a template engine. Create a `default.jingoo` file if you want to customize. Please refer to the provided template [here](default.jingoo) and customize as you see fit. 
+`Starred_ml` uses [jingoo](https://github.com/tategakibunko/jingoo) as a template engine. Create a `default.jingoo` file if you want to customize. Please refer to the provided template [here](default.jingoo) and customize as you see fit. 
 
 The availabe variables are:
    - `languages` - a list of languages detected across all starred repos.
