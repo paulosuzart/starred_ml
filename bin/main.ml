@@ -17,25 +17,38 @@ let https ~authenticator =
 
 let token = Sys.getenv "TOKEN"
 
-let fetch sw client token =
+let next_link (s : Http.Header.t) =
+  let open Re2 in
+  Eio.traceln "%s" @@ Http.Header.to_string s;
+  match Http.Header.get s "Link" with
+  | None -> None
+  | Some l ->
+      let re = Re2.create_exn "<([^;]+)>; rel=\"next\"" in
+      let link =
+        try Some (Re2.find_first_exn ~sub:(`Index 1) re l)
+        with Re2.Exceptions.Regex_match_failed a -> None
+      in
+      link
+
+let fetch l client token =
+  Eio.Switch.run @@ fun sw ->
   let headers =
     Eio.traceln "Token %s" token;
 
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
-  let resp, body =
-    Client.get ~headers ~sw client
-      (Uri.of_string
-      @@ Format.sprintf "https://api.github.com/user/starred?per_page=%i" 100)
-  in
+  let resp, body = Client.get ~headers ~sw client (Uri.of_string l) in
+
   if Http.Status.compare resp.status `OK = 0 then
-    Some (Eio.Buf_read.(parse_exn take_all) body ~max_size:max_int)
+    Some
+      ( Eio.Buf_read.(parse_exn take_all) body ~max_size:max_int,
+        next_link resp.headers )
   else None
 
 open Github
 open Jingoo
 
-let output models = Jg_template.from_file "default.jingoo" ~models
+let render_template models = Jg_template.from_file "default.jingoo" ~models
 
 let unique_lang (bz : (string * starred list) list) =
   let rec unique' b acc =
@@ -44,8 +57,7 @@ let unique_lang (bz : (string * starred list) list) =
   let u = unique' bz [] |> List.rev in
   Jg_types.Tlist (List.map (fun w -> Jg_types.Tstr w) u)
 
-let print_content s =
-  let items = Github.from_string s in
+let print_content items =
   let bz = Github.by_language items in
   let unique_languages = unique_lang bz in
   let m =
@@ -71,7 +83,8 @@ let print_content s =
           ])
       bz
   in
-  output [ ("languages", unique_languages); ("by_language", Jg_types.Tlist m) ]
+  render_template
+    [ ("languages", unique_languages); ("by_language", Jg_types.Tlist m) ]
 
 let () =
   Eio_main.run @@ fun env ->
@@ -79,8 +92,14 @@ let () =
   let client =
     Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
   in
-  Eio.Switch.run @@ fun sw ->
   let t = token in
-  match fetch sw client t with
-  | Some r -> print_endline @@ print_content r
-  | None -> Logs.info (fun m -> m ":aaa")
+  let rec fetch_github l acc =
+    match fetch l client t with
+    | Some (r, Some n) -> fetch_github n (Github.from_string r @ acc)
+    | Some (r, None) -> Github.from_string r @ acc
+    | None -> []
+  in
+  let content =
+    fetch_github "https://api.github.com/user/starred?per_page=100" []
+  in
+  print_endline @@ print_content content

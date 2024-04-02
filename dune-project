@@ -20,6 +20,8 @@
  (synopsis "Generates a awesome list makdown")
  (description "Turn your starred items into a awesomeness list of repos")
  (depends
+  (re2
+   (>= v0.16.0))
   (alcotest
    (and
     (>= 1.7.0)

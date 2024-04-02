@@ -17,5 +17,6 @@
   yojson
   logs
   jingoo
+  re2
   logs.fmt
   logs.threaded))
