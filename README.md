@@ -52,7 +52,8 @@ Templating
 `Starred_ml` uses [jingoo](https://github.com/tategakibunko/jingoo) as a template engine. Create a `default.jingoo` file if you want to customize. Please refer to the provided template [here](default.jingoo) and customize as you see fit. 
 
 The availabe variables are:
-   - `languages` - a list of languages detected across all starred repos.
+   - `lang_count` - The total count of languages found (Including `Not set`)
+   - `languages` - a list of languages detected across all starred repos
    - `by_language` - a list of objects representing starred repositories with the following keys:
       - `language` - the language of in question
       - `starred` - a list of objects with the following keys:
@@ -64,4 +65,4 @@ Similar projects
 ---
 While developing `Starred_ml` I found at least one alternative:
 
-   - [smaguowei/starred](https://github.com/maguowei/starred) written in python. I then proceeded to use a similar output.  
+   - [smaguowei/starred](https://github.com/maguowei/starred) written in python. I then proceeded to use a similar output

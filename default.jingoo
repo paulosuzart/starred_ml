@@ -7,6 +7,9 @@ Awesome Starts
 Languages
 ---
 
+Languages starred: {{ lang_count }}:
+
+
 {%- for lang in languages %}
    - [{{ lang }}](#{{ lang }})
 {%- endfor %}

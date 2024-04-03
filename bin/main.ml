@@ -15,10 +15,7 @@ let https ~authenticator =
     in
     Tls_eio.client_of_flow ?host tls_config raw
 
-let token = Sys.getenv "TOKEN"
-
 let next_link (s : Http.Header.t) =
-  let open Re2 in
   Eio.traceln "%s" @@ Http.Header.to_string s;
   match Http.Header.get s "Link" with
   | None -> None
@@ -26,18 +23,18 @@ let next_link (s : Http.Header.t) =
       let re = Re2.create_exn "<([^;]+)>; rel=\"next\"" in
       let link =
         try Some (Re2.find_first_exn ~sub:(`Index 1) re l)
-        with Re2.Exceptions.Regex_match_failed a -> None
+        with Re2.Exceptions.Regex_match_failed _ -> None
       in
       link
 
-let fetch l client token =
+let fetch apai_url client token =
   Eio.Switch.run @@ fun sw ->
   let headers =
     Eio.traceln "Token %s" token;
 
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
-  let resp, body = Client.get ~headers ~sw client (Uri.of_string l) in
+  let resp, body = Client.get ~headers ~sw client (Uri.of_string apai_url) in
 
   if Http.Status.compare resp.status `OK = 0 then
     Some
@@ -83,8 +80,13 @@ let print_content items =
           ])
       bz
   in
+  let count = List.length bz in
   render_template
-    [ ("languages", unique_languages); ("by_language", Jg_types.Tlist m) ]
+    [
+      ("lang_count", Jg_types.Tint count);
+      ("languages", unique_languages);
+      ("by_language", Jg_types.Tlist m);
+    ]
 
 let () =
   Eio_main.run @@ fun env ->
@@ -92,7 +94,7 @@ let () =
   let client =
     Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
   in
-  let t = token in
+  let t = Sys.getenv "TOKEN" in
   let rec fetch_github l acc =
     match fetch l client t with
     | Some (r, Some n) -> fetch_github n (Github.from_string r @ acc)
@@ -102,4 +104,4 @@ let () =
   let content =
     fetch_github "https://api.github.com/user/starred?per_page=100" []
   in
-  print_endline @@ print_content content
+  Eio.Stdenv.stdout env |> Eio.Flow.copy_string @@ print_content content
