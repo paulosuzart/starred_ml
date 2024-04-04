@@ -58,4 +58,8 @@ jobs:
           git config url."https://github.com/".pushInsteadOf "git@github.com:"
       
       - run: |
-          opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository -u paulosuzart
+
+          git config user.email "${{ secrets.USER_EMAIL }}"
+          git config user.name "Paulo Suzart"
+          git config url."https://github.com/".pushInsteadOf "git@github.com:"
+          opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository
