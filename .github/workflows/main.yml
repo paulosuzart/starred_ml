@@ -44,4 +44,4 @@ jobs:
           opam exec -- dune-release distrib
           opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -vv
           opam exec -- dune-release opam pkg --token=${{ secrets.GITHUB_TOKEN }} -vv
-          opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -vv --no-auto-open 
+          opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -vv --no-auto-open --opan-repo=paulosuzart/opam-repository 
