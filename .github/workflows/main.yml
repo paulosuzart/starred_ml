@@ -27,6 +27,8 @@ jobs:
 
       - run: opam exec -- dune runtest
 
+      - run: opam install dune-release 
+
       - run: opam exec -- dune-release lint
 
       - run: opam exec -- dune-release tag
