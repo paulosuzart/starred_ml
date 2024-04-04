@@ -41,6 +41,6 @@ jobs:
       - run: |
           opam exec -- dune-release tag -f -y
           opam exec -- dune-release distrib
-          opam exec -- dune-release publish -y --token ${{ secrets.PERSONAL_TOKEN }}
-          opam exec -- dune-release opam pkg
+          opam exec -- dune-release publish -y --token ${{ secrets.PERSONAL_TOKEN }} -v
+          opam exec -- dune-release opam pkg -v
           opam exec -- dune-release opam submit
