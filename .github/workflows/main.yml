@@ -37,7 +37,7 @@ jobs:
       - run: |
           git config user.email "${{ secrets.USER_EMAIL }}"
           git config user.name "Paulo Suzart"
-      
-      - run: opam exec -- dune-release tag -f -y --token ${{ secrets.PERSONAL_TOKEN }}
 
-      - run: opam exec -- dune-release
+      - run: opam exec -- dune-release tag -f -y
+
+      - run: opam exec -- dune-release --token ${{ secrets.PERSONAL_TOKEN }}
