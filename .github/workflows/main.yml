@@ -52,4 +52,4 @@ jobs:
           path: opam-repository
      
       - run: |
-          opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository
+          opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository
