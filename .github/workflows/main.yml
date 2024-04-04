@@ -35,8 +35,8 @@ jobs:
       - run: opam exec -- dune-release lint
 
       - run: |
-          git config user.email "${{ secrets.USER_EMAIL }}"
-          git config user.name "Paulo Suzart"
+          git config --global user.email "${{ secrets.USER_EMAIL }}"
+          git config --global user.name "Paulo Suzart"
           git config url."https://github.com/".pushInsteadOf "git@github.com:"
 
       - run: |
@@ -50,16 +50,6 @@ jobs:
         with:
           repository: paulosuzart/opam-repository
           path: opam-repository
-
-        
+     
       - run: |
-          git config user.email "${{ secrets.USER_EMAIL }}"
-          git config user.name "Paulo Suzart"
-          git config url."https://github.com/".pushInsteadOf "git@github.com:"
-      
-      - run: |
-
-          git config user.email "${{ secrets.USER_EMAIL }}"
-          git config user.name "Paulo Suzart"
-          git config url."https://github.com/".pushInsteadOf "git@github.com:"
           opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository
