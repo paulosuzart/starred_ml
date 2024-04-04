@@ -4,9 +4,8 @@ synopsis: "Generates a awesome list makdown"
 description: "Turn your starred items into a awesomeness list of repos"
 maintainer: ["Paulo Suzart"]
 authors: ["Paulo Suzart"]
-license: "LICENSE"
+license: "CC0-1.0"
 homepage: "https://github.com/paulosuzart/starred_ml"
-doc: "https://url/to/documentation"
 bug-reports: "https://github.com/paulosuzart/starred_ml/issues"
 depends: [
   "re2" {>= "v0.16.0"}

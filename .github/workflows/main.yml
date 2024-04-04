@@ -2,7 +2,7 @@ name: Builds, tests & co
 
 on:
   push:
-    branch_ignores:
+    branches:
       - main
 
 jobs:
@@ -27,8 +27,8 @@ jobs:
 
       - run: opam exec -- dune runtest
 
-      - name: Upload the build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ubunrtu-latest-5.1.1-starred_ml.exe
-          path: _build/default/world.exe
+      - run: opam exec -- dune-release lint
+
+      - run: opam exec -- dune-release tag
+
+      - run: opam exec -- dune-release

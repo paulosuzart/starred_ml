@@ -1,7 +1,9 @@
 open Cohttp_eio
 
+(** Just a empty authz. Copied from cohttp. Needsinvestigation *)
 let null_auth ?ip:_ ~host:_ _ = Ok None
 
+(** Effectively calls the https endpoint *)
 let https ~authenticator =
   let tls_config = Tls.Config.client ~authenticator () in
   fun uri raw ->
@@ -11,6 +13,7 @@ let https ~authenticator =
     in
     Tls_eio.client_of_flow ?host tls_config raw
 
+(** Github uses rel links to indicate the next page. It's better to rely on them instead of keeping a page counter *)
 let next_link s =
   Eio.traceln "%s" @@ Http.Header.to_string s;
   match Http.Header.get s "Link" with

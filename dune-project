@@ -11,9 +11,7 @@
 
 (maintainers "Paulo Suzart")
 
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license "CC0-1.0")
 
 (package
  (name starred_ml)
