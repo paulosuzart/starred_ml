@@ -48,7 +48,7 @@ jobs:
       - name: Checkout opam fork
         uses: actions/checkout@v4
         with:
-          repository: https://github.com/paulosuzart/opam-repository
+          repository: paulosuzart/opam-repository
           path: opam-repository
 
         
