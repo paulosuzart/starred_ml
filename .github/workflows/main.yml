@@ -44,4 +44,13 @@ jobs:
           opam exec -- dune-release distrib
           opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -vv
           opam exec -- dune-release opam pkg --token=${{ secrets.GITHUB_TOKEN }} -vv
-          opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -vv --no-auto-open -r git@github.com:paulosuzart/opam-repository -l ./opam-repository
+
+      - name: Checkout opam fork
+        uses: actions/checkout@v4
+        with:
+          repository: https://github.com/paulosuzart/opam-repository
+          path: opam-repository
+
+        
+      - run: |
+          opam exec -- dune-release opam submit --token=${{ secrets.GITHUB_TOKEN }} -vv --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository
