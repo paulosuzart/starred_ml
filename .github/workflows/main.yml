@@ -42,6 +42,6 @@ jobs:
       - run: |
           opam exec -- dune-release tag -f -y
           opam exec -- dune-release distrib
-          opam exec -- dune-release publish -y --token ${{ secrets.GITHUB_TOKEN }} -v
+          opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -v
           opam exec -- dune-release opam pkg -v
           opam exec -- dune-release opam submit
