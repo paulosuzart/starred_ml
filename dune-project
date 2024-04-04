@@ -26,8 +26,6 @@
     :with-test))
   (yojson
    (>= 2.1.2))
-  (tls-lwt
-   (>= 0.17.3))
   (tls-eio
    (>= 0.17.3))
   (ppx_deriving_yojson
@@ -36,8 +34,6 @@
    (>= 5.2.1))
   (mirage-crypto-rng-eio
    (>= 0.11.3))
-  (lwt
-   (>= 5.7.0))
   (logs
    (>= 0.7.0))
   (jingoo
