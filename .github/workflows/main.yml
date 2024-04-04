@@ -37,6 +37,7 @@ jobs:
       - run: |
           git config user.email "${{ secrets.USER_EMAIL }}"
           git config user.name "Paulo Suzart"
+          git config url."https://github.com/".pushInsteadOf "git@github.com:"
 
       - run: |
           opam exec -- dune-release tag -f -y
