@@ -13,7 +13,7 @@ let starred_pp ppf i =
 let starred_testable = Alcotest.testable starred_pp starred_eq
 
 let test_group () =
-  let sample =
+  let sample_java_repo =
     {
       name = "Sample";
       description = Some "Description";
@@ -21,11 +21,19 @@ let test_group () =
       language = Some "Java";
       url = "example.com";
     }
+  and sample_ocaml_repo =
+    {
+      name = "Another Repo";
+      description = Some "Description";
+      topics = [ "Flow" ];
+      language = Some "Ocaml";
+      url = "example.com";
+    }
   in
   Alcotest.(check starred_testable)
     "Repos are grouped by topic"
-    [ ("Java", [ sample ]) ]
-    (by_language [ sample ])
+    [ ("Java", [ sample_java_repo ]); ("Ocaml", [ sample_ocaml_repo ]) ]
+    (by_language [ sample_java_repo; sample_ocaml_repo ])
 
 let () =
   run "Github" [ ("group_by-case", [ test_case "Group" `Quick test_group ]) ]

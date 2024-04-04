@@ -30,8 +30,6 @@ let next_link (s : Http.Header.t) =
 let fetch apai_url client token =
   Eio.Switch.run @@ fun sw ->
   let headers =
-    Eio.traceln "Token %s" token;
-
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
   let resp, body = Client.get ~headers ~sw client (Uri.of_string apai_url) in
@@ -94,7 +92,13 @@ let () =
   let client =
     Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
   in
-  let t = Sys.getenv "TOKEN" in
+  let t =
+    try Sys.getenv "TOKEN"
+    with Not_found ->
+      Eio.traceln "You need to provide a TOKEN env";
+      raise Not_found
+  in
+
   let rec fetch_github l acc =
     match fetch l client t with
     | Some (r, Some n) -> fetch_github n (Github.from_string r @ acc)
