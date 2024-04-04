@@ -31,6 +31,6 @@ jobs:
 
       - run: opam exec -- dune-release lint
 
-      - run: opam exec -- dune-release tag
+      - run: opam exec -- dune-release tag -f -y
 
       - run: opam exec -- dune-release
