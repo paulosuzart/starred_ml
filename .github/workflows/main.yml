@@ -55,7 +55,6 @@ jobs:
       - run: |
           opam exec -- dune-release tag -f -y -vv
           echo "Finished tagging"
-          opam exec -- dune-release --token=${{ secrets.PERSONAL_TOKEN }} -l $GITHUB_WORKSPACE/opam-repository -r git@github.com:paulosuzart/opam-repository 
           opam exec -- dune-release distrib
           opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -vv
           opam exec -- dune-release opam pkg --token=${{ secrets.GITHUB_TOKEN }} -vv
