@@ -52,11 +52,10 @@ jobs:
           repository: paulosuzart/opam-repository
           path: opam-repository
 
-      - run: |
-          opam exec -- dune-release tag -f -y -vv
+      - run: opam exec -- dune-release tag -f -y -vv
         working-directory: ${{ github.event.repository.name }}
 
-      - run:
+      - run: |
           opam exec -- dune-release distrib
           opam exec -- dune-release publish -y --token=${{ secrets.PERSONAL_TOKEN }} -vv
         working-directory: ${{ github.event.repository.name }}
