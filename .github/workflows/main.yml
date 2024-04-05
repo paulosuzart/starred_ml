@@ -54,10 +54,15 @@ jobs:
 
       - run: |
           opam exec -- dune-release tag -f -y -vv
-          echo "Finished tagging"
+        working-directory: ${{ github.event.repository.name }}
+
+      - run:
           opam exec -- dune-release distrib
-          opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -vv
-          opam exec -- dune-release opam pkg --token=${{ secrets.GITHUB_TOKEN }} -vv
+          opam exec -- dune-release publish -y --token=${{ secrets.PERSONAL_TOKEN }} -vv
+        working-directory: ${{ github.event.repository.name }}
+
+      - run: |
+          opam exec -- dune-release opam pkg --token=${{ secrets.PERSONAL_TOKEN }} -vv
           opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l $GITHUB_WORKSPACE/opam-repository
         working-directory: ${{ github.event.repository.name }}
 
