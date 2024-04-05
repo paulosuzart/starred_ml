@@ -18,6 +18,7 @@ jobs:
     steps:
       - name: Checkout tree
         uses: actions/checkout@v4
+        path: ${{ github.event.repository.name }}
 
       - name: Set-up OCaml
         uses: ocaml/setup-ocaml@v2
@@ -25,16 +26,19 @@ jobs:
           ocaml-compiler: '5.1.1'
 
       - run: opam install . --deps-only --with-test
+        working-directory: ${{ github.event.repository.name }}
 
       - run: opam exec -- dune build
+        working-directory: ${{ github.event.repository.name }}
 
       - run: opam exec -- dune runtest
+        working-directory: ${{ github.event.repository.name }}
 
       - run: opam install dune-release 
+        working-directory: ${{ github.event.repository.name }}
 
-      - run: |
-          opam exec -- dune-release lint
-          opam exec -- dune-release tag -f -y
+      - run: opam exec -- dune-release lint
+        working-directory: ${{ github.event.repository.name }}
 
       - run: |
           git config --global user.email "${{ secrets.USER_EMAIL }}"
@@ -48,6 +52,7 @@ jobs:
           path: opam-repository
 
       - run: |
+          opam exec -- dune-release tag -f -y
           opam exec -- dune-release --token=${{ secrets.PERSONAL_TOKEN }} -l opam-repository -r git@github.com:paulosuzart/opam-repository 
                 #          opam exec -- dune-release distrib
 #          opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -vv
