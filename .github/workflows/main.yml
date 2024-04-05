@@ -49,13 +49,13 @@ jobs:
           git config --global user.name "Paulo Suzart"
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
 
-      - name: Checkout opam fork
-        uses: actions/checkout@v4
-        with:
-          repository: paulosuzart/opam-repository
-          path: opam-repository
-          token: ${{ secrets.PERSONAL_TOKEN }}
-          persist-credentials: true
+      # - name: Checkout opam fork
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: paulosuzart/opam-repository
+      #     path: opam-repository
+      #     token: ${{ secrets.PERSONAL_TOKEN }}
+      #     persist-credentials: true
 
       - run: opam exec -- dune-release tag -f -y -vv
         working-directory: ${{ github.event.repository.name }}
@@ -66,7 +66,7 @@ jobs:
         working-directory: ${{ github.event.repository.name }}
 
       - run: |
-          opam exec -- dune-release opam pkg --token=${{ secrets.PERSONAL_TOKEN }} -vv
-          opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -v --no-auto-open -r https://github.com/paulosuzart/opam-repository -l $GITHUB_WORKSPACE/opam-repository
+          opam exec -- dune-release opam pkg --token=${{ secrets.PERSONAL_TOKEN }} -v
+          opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -vv --no-auto-open -r https://github.com/paulosuzart/opam-repository -l $GITHUB_WORKSPACE/opam-repository
         working-directory: ${{ github.event.repository.name }}
 
