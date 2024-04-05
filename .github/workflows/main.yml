@@ -66,8 +66,7 @@ jobs:
         working-directory: ${{ github.event.repository.name }}
 
       - run: |
-          ls -lah
           opam exec -- dune-release opam pkg --token=${{ secrets.PERSONAL_TOKEN }} -v
-          opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -vv --no-auto-open -r https://github.com/paulosuzart/opam-repository -l ${{ github.workspace }}/opam-repository
+          opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -vv -y --no-auto-open -r https://github.com/paulosuzart/opam-repository -l ${{ github.workspace }}/opam-repository
         working-directory: ${{ github.event.repository.name }}
 
