@@ -39,17 +39,24 @@ jobs:
           git config --global user.name "Paulo Suzart"
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
 
-      - run: |
-          opam exec -- dune-release tag -f -y
-          opam exec -- dune-release distrib
-          opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -vv
-          opam exec -- dune-release opam pkg --token=${{ secrets.GITHUB_TOKEN }} -vv
-
       - name: Checkout opam fork
         uses: actions/checkout@v4
         with:
           repository: paulosuzart/opam-repository
           path: opam-repository
-     
+
       - run: |
-          opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository
+          opam exec -- dune-release tag -f -y
+          opam exec -- dune-release --token=${{ secrets.PERSONAL_TOKEN }} -l opam-repository -r git@github.com:paulosuzart/opam-repository 
+                #          opam exec -- dune-release distrib
+#          opam exec -- dune-release publish -y --token=${{ secrets.GITHUB_TOKEN }} -vv
+#          opam exec -- dune-release opam pkg --token=${{ secrets.GITHUB_TOKEN }} -vv
+
+      # - name: Checkout opam fork
+        # uses: actions/checkout@v4
+        # with:
+        #   repository: paulosuzart/opam-repository
+      #     path: opam-repository
+     
+      # - run: |
+      #     opam exec -- dune-release opam submit --token=${{ secrets.PERSONAL_TOKEN }} -v --no-auto-open -r git@github.com:paulosuzart/opam-repository -l opam-repository
