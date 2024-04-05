@@ -48,11 +48,11 @@ jobs:
           git config --global user.name "Paulo Suzart"
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
 
-      - name: Checkout opam fork
-        uses: actions/checkout@v4
-        with:
-          repository: paulosuzart/opam-repository
-          path: opam-repository
+      # - name: Checkout opam fork
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: paulosuzart/opam-repository
+      #     path: opam-repository
 
       - run: opam exec -- dune-release tag -f -y -vv
         working-directory: ${{ github.event.repository.name }}
