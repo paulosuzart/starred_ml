@@ -9,6 +9,7 @@ permissions:
   contents: write
   pull-requests: write
   actions: write
+  id-token: write
   
 jobs:
   build:
@@ -53,6 +54,8 @@ jobs:
         with:
           repository: paulosuzart/opam-repository
           path: opam-repository
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          persist-credentials: true
 
       - run: opam exec -- dune-release tag -f -y -vv
         working-directory: ${{ github.event.repository.name }}
