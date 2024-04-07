@@ -27,7 +27,7 @@ let print_content items =
                      Jg_types.Tobj
                        [
                          ("name", Jg_types.Tstr i.name);
-                         ("url", Jg_types.Tstr i.url);
+                         ("html_url", Jg_types.Tstr i.html_url);
                          ( "description",
                            match i.description with
                            | Some d -> Jg_types.Tstr d
@@ -42,4 +42,5 @@ let print_content items =
     [
       ("lang_count", Jg_types.Tint count);
       ("languages", unique_languages);
-      ("by_language", Jg_types.Tlist m);]
+      ("by_language", Jg_types.Tlist m);
+    ]

@@ -3,7 +3,7 @@ type starred = {
   description : string option;
   topics : string list;
   language : string option;
-  url: string
+  html_url : string
 }
 [@@deriving show, yojson { strict = false; exn = true }]
 

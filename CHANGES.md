@@ -1,3 +1,9 @@
+## 0.0.3
+
+- The generated output was using `url` of the repo, that points to the GitHub API. This release fixes it by using the proper `html_url`.
+- Some other small typos were fixed
+- A reference to the template repository using `starred_ml` was also added
+
 ## 0.0.2
 
 Includes pagination and total language count. See the template.
