@@ -6,15 +6,22 @@ Are you a compulsive Github stargazer? `Starred_ml` is here for you! It will acc
 
 ## Running
 
+
 ```shell
-TOKEN={{your github personal token}} opam Starred_ml 
+opam update
+opam install starred_ml
+
+
+TOKEN={{your github personal token}} starred_ml > README.md 
 ```
+
+_See [Templating](#Templating) section for details on the output markdown._
 
 Will output something liket this:  
 
 ```mardkown
 
-Awesome Starts
+Awesome Stars
 ===
 
 > A curated list of Github starts! Geberated by [starred_ml](https://github.com/paulosuzart/starred_ml)
@@ -25,10 +32,6 @@ Languages
    - [C](#C)
    - [C#](#C#)
    - [C++](#C++)
-   - [Clojure](#Clojure)
-   - [Elixir](#Elixir)
-   - [Go](#Go)
-   - [Groovy](#Groovy)
    - [Haskell](#Haskell)
    - [Java](#Java)
    - [Jupyter Notebook](#Jupyter Notebook)
