@@ -19,7 +19,7 @@ let test_group () =
       description = Some "Description";
       topics = [ "Flow" ];
       language = Some "Java";
-      url = "example.com";
+      html_url = "example.com";
     }
   and sample_ocaml_repo =
     {
@@ -27,7 +27,7 @@ let test_group () =
       description = Some "Description";
       topics = [ "Flow" ];
       language = Some "Ocaml";
-      url = "example.com";
+      html_url = "example.com";
     }
   in
   Alcotest.(check starred_testable)
