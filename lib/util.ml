@@ -1,5 +1,4 @@
 open Jingoo
-module Github = Starred_ml.Github
 open Github
 
 let render_template models = Jg_template.from_file "default.jingoo" ~models

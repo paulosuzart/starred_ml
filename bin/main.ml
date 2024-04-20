@@ -1,6 +1,7 @@
 open Cohttp_eio
-include Util
-include Http_util
+open Starred_ml.Util
+open Starred_ml.Http_util
+module Github = Starred_ml.Github
 
 let () = Logs.set_reporter (Logs_fmt.reporter ())
 and () = Logs_threaded.enable ()

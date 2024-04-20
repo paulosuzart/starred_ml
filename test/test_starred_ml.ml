@@ -1,8 +1,8 @@
 open Alcotest
 module Github = Starred_ml.Github
+module Http_util = Starred_ml.Http_util
+open Http_util
 open Github
-
-let starred_eq a b = a = b
 
 let starred_pp ppf i =
   List.iter
@@ -10,7 +10,7 @@ let starred_pp ppf i =
       List.iter (fun z -> Fmt.pf ppf "%s -> %s" t (show_starred z)) p)
     i
 
-let starred_testable = Alcotest.testable starred_pp starred_eq
+let starred_testable = Alcotest.testable starred_pp ( = )
 
 let test_group () =
   let sample_java_repo =
@@ -35,5 +35,29 @@ let test_group () =
     [ ("Java", [ sample_java_repo ]); ("Ocaml", [ sample_ocaml_repo ]) ]
     (by_language [ sample_java_repo; sample_ocaml_repo ])
 
+let option_pp ppf o =
+  match o with Some l -> Fmt.pf ppf "%s" l | None -> Fmt.pf ppf "No next link"
+
+let testable_link = Alcotest.testable option_pp ( = )
+
+let test_no_next_page () =
+  Alcotest.(check testable_link)
+    "A last page returns None" None
+    (next_link
+    @@ Http.Header.of_list [ ("Link", "<http://prev>; rel=\"prev\"") ])
+
+let test_next_page () =
+  Alcotest.(check testable_link)
+    "A last page returns None" (Some "http://s")
+    (next_link @@ Http.Header.of_list [ ("Link", "<http://s>; rel=\"next\"") ])
+
 let () =
-  run "Github" [ ("group_by-case", [ test_case "Group" `Quick test_group ]) ]
+  run "Starred_ml"
+    [
+      ("Github", [ test_case "Group" `Quick test_group ]);
+      ( "Http_util",
+        [
+          test_case "No Pagination" `Quick test_no_next_page;
+          test_case "Next Pat" `Quick test_next_page;
+        ] );
+    ]
