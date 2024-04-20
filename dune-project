@@ -11,13 +11,15 @@
 
 (maintainers "Paulo Suzart")
 
-(license "CC0-1.0")
+(license CC0-1.0)
 
 (package
  (name starred_ml)
  (synopsis "Generates a awesome list makdown")
  (description "Turn your starred items into a awesomeness list of repos")
  (depends
+  (cmdliner
+   (>= 1.2.0))
   (re2
    (>= v0.16.0))
   (alcotest
