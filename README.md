@@ -15,6 +15,9 @@ opam install starred_ml
 TOKEN={{your github personal token}} starred_ml > README.md 
 ```
 
+For full option list, run `starred_ml --help`.
+
+
 _See [Templating](#Templating) section for details on the output markdown._
 
 Will output something liket this:  
@@ -64,7 +67,8 @@ You need two things:
 Templating
 ---
 
-`Starred_ml` uses [jingoo](https://github.com/tategakibunko/jingoo) as a template engine. Create a `default.jingoo` file if you want to customize. Please refer to the provided template [here](default.jingoo) and customize as you see fit. 
+`Starred_ml` uses [jingoo](https://github.com/tategakibunko/jingoo) as a template engine. Create a template file (default is `default.jingoo`) if you want to customize. 
+You can reuse the provided template [here](default.jingoo) and customize as you see fit. You can save the template with a different name, but it must reside in the folder where you run `starred_ml`. Use `--template` the specify the different template file. 
 
 The availabe variables are:
    - `lang_count` - The total count of languages found (Including `Not set`)

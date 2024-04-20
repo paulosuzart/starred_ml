@@ -8,6 +8,7 @@ license: "CC0-1.0"
 homepage: "https://github.com/paulosuzart/starred_ml"
 bug-reports: "https://github.com/paulosuzart/starred_ml/issues"
 depends: [
+  "cmdliner" {>= "1.2.0"}
   "re2" {>= "v0.16.0"}
   "alcotest" {>= "1.7.0" & with-test}
   "yojson" {>= "2.1.2"}

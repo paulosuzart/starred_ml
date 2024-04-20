@@ -1,7 +1,7 @@
 open Jingoo
 open Github
 
-let render_template models = Jg_template.from_file "default.jingoo" ~models
+let render_template models template = Jg_template.from_file template ~models
 
 let unique_lang (bz : (string * starred list) list) =
   let rec unique' b acc =
@@ -10,7 +10,7 @@ let unique_lang (bz : (string * starred list) list) =
   let u = unique' bz [] |> List.rev in
   Jg_types.Tlist (List.map (fun w -> Jg_types.Tstr w) u)
 
-let print_content items =
+let print_content items template =
   let bz = Github.by_language items in
   let unique_languages = unique_lang bz in
   let m =
@@ -43,3 +43,4 @@ let print_content items =
       ("languages", unique_languages);
       ("by_language", Jg_types.Tlist m);
     ]
+    template

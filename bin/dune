@@ -6,5 +6,6 @@
  (libraries
   starred_ml
   ppx_deriving
+  cmdliner
   logs.fmt
   logs.threaded))
