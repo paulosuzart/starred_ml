@@ -1,3 +1,9 @@
+## 0.0.4
+
+- Added [CmdLiner](https://erratique.ch/software/cmdliner/doc/Cmdliner/) for a smoother experience. The addition is fully compatible with previous `TOKEN` env var only.
+- Moved some code for better testability, leaving `bin` for pure execution.
+- Added a bit more tests
+
 ## 0.0.3
 
 - The generated output was using `url` of the repo, that points to the GitHub API. This release fixes it by using the proper `html_url`.
