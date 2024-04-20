@@ -10,8 +10,7 @@ and () = Logs_threaded.enable ()
 let template =
   let doc = "Template used to generate the markdown" in
   Arg.(
-    value
-    & opt string "default.jingoo"
+    value & opt file "default.jingoo"
     & info [ "j"; "template" ] ~docv:"TEMPLATE" ~doc)
 
 let token =

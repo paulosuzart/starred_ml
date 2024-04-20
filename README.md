@@ -68,7 +68,7 @@ Templating
 ---
 
 `Starred_ml` uses [jingoo](https://github.com/tategakibunko/jingoo) as a template engine. Create a template file (default is `default.jingoo`) if you want to customize. 
-You can reuse the provided template [here](default.jingoo) and customize as you see fit. You can save the template with a different name, but it must reside in the folder where you run `starred_ml`. Use `--template` the specify the different template file. 
+You can reuse the provided template [here](default.jingoo) and customize as you see fit. You can save the template with a different name. Use `--template` the specify a different template file. 
 
 The availabe variables are:
    - `lang_count` - The total count of languages found (Including `Not set`)
