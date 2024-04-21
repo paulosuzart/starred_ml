@@ -45,9 +45,9 @@ Contents
 ---
 
 ## C
-   - [PikaPython](https://api.github.com/repos/pikasTech/PikaPython): An ultra-lightweight Python interpreter that runs with only 4KB of RAM, zero dependencies. It is ready to use out of the box without any configuration required and easy to extend with C. Similar project: MicroPython, JerryScript.
+   - [pikasTech/PikaPython](https://api.github.com/repos/pikasTech/PikaPython) - An ultra-lightweight Python interpreter that runs with only 4KB of RAM, zero dependencies. It is ready to use out of the box without any configuration required and easy to extend with C. Similar project: MicroPython, JerryScript.
 ## C#
-   - [kiota](https://api.github.com/repos/microsoft/kiota): OpenAPI based HTTP Client code generator
+   - [microsoft/kiota](https://api.github.com/repos/microsoft/kiota) - OpenAPI based HTTP Client code generator
 ...
 
 ```
