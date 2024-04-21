@@ -31,6 +31,7 @@ let print_content items template =
                            match i.description with
                            | Some d -> Jg_types.Tstr d
                            | None -> Jg_types.Tnull );
+                         ("owner_login", Jg_types.Tstr i.owner.login);
                        ])
                    items') );
           ])

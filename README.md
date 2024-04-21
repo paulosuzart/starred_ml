@@ -79,6 +79,7 @@ The availabe variables are:
          - `name` - name of the repository
          - `html_url` - Github url
          - `description` - repository description
+         - `owner_login` - the repository owner login
 
 Similar projects
 ---

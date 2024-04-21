@@ -1,9 +1,15 @@
+type owner = {
+  login: string;
+}
+[@@deriving show, yojson { strict = false; exn = true}]
+
 type starred = {
   name : string;
   description : string option;
   topics : string list;
   language : string option;
-  html_url : string
+  html_url : string;
+  owner: owner;
 }
 [@@deriving show, yojson { strict = false; exn = true }]
 

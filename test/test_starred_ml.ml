@@ -20,6 +20,7 @@ let test_group () =
       topics = [ "Flow" ];
       language = Some "Java";
       html_url = "example.com";
+      owner = { login = "auser" };
     }
   and sample_java_repo2 =
     {
@@ -28,6 +29,7 @@ let test_group () =
       topics = [ "Flow" ];
       language = Some "Java";
       html_url = "example.com";
+      owner = { login = "viola" };
     }
   and sample_ocaml_repo =
     {
@@ -36,6 +38,7 @@ let test_group () =
       topics = [ "Flow" ];
       language = Some "Ocaml";
       html_url = "example.com";
+      owner = { login = "bar" };
     }
   in
   Alcotest.(check starred_testable)
