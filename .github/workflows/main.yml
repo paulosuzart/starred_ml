@@ -55,12 +55,12 @@ jobs:
           token: ${{ secrets.PERSONAL_TOKEN }}
           persist-credentials: true
 
-      - run: opam exec -- dune-release tag -f -y -vv
+      - run: opam exec -- dune-release tag -y -v
         working-directory: ${{ github.event.repository.name }}
 
       - run: |
           opam exec -- dune-release distrib
-          opam exec -- dune-release publish -y --token=${{ secrets.PERSONAL_TOKEN }} -vv
+          opam exec -- dune-release publish -y --token=${{ secrets.PERSONAL_TOKEN }} -v
         working-directory: ${{ github.event.repository.name }}
 
       - run: |
