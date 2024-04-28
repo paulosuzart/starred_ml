@@ -1,3 +1,8 @@
+## 0.0.5
+
+- More stable sorting
+- Introduces new template variable `owner_login` for a more complete link to the starred repo.
+
 ## 0.0.4
 
 - Added [CmdLiner](https://erratique.ch/software/cmdliner/doc/Cmdliner/) for a smoother experience. The addition is fully compatible with previous `TOKEN` env var only.
