@@ -15,11 +15,21 @@ let starred_testable = Alcotest.testable starred_pp ( = )
 let test_group () =
   let sample_java_repo =
     {
+      name = "Xample";
+      description = Some "Description";
+      topics = [ "Flow" ];
+      language = Some "Java";
+      html_url = "example.com";
+      owner = { login = "auser" };
+    }
+  and sample_java_repo2 =
+    {
       name = "Sample";
       description = Some "Description";
       topics = [ "Flow" ];
       language = Some "Java";
       html_url = "example.com";
+      owner = { login = "viola" };
     }
   and sample_ocaml_repo =
     {
@@ -28,12 +38,16 @@ let test_group () =
       topics = [ "Flow" ];
       language = Some "Ocaml";
       html_url = "example.com";
+      owner = { login = "bar" };
     }
   in
   Alcotest.(check starred_testable)
     "Repos are grouped by topic"
-    [ ("Java", [ sample_java_repo ]); ("Ocaml", [ sample_ocaml_repo ]) ]
-    (by_language [ sample_java_repo; sample_ocaml_repo ])
+    [
+      ("Java", [ sample_java_repo2; sample_java_repo ]);
+      ("Ocaml", [ sample_ocaml_repo ]);
+    ]
+    (by_language [ sample_java_repo; sample_ocaml_repo; sample_java_repo2 ])
 
 let option_pp ppf o =
   match o with Some l -> Fmt.pf ppf "%s" l | None -> Fmt.pf ppf "No next link"
