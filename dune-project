@@ -15,7 +15,7 @@
 
 (package
  (name starred_ml)
- (synopsis "Generates a awesome list makdown")
+ (synopsis "Generates a awesome list markdown")
  (description "Turn your starred items into a awesomeness list of repos")
  (depends
   (cmdliner
