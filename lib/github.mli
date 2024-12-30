@@ -18,5 +18,5 @@ val from_string : string -> starred_response
 (** Converts a result page of starred paged result into a list of starred *)
 
 val by_language : starred list -> (string * starred list) list
-(** Converts a list of starred items into a struc grouped by language
- like [("java", [starred; starred]), ("scala", [starred;...])] *)
+(** Converts a list of starred items into a struc grouped by language like
+    [("java", [starred; starred]), ("scala", [starred;...])] *)
