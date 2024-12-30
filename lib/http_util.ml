@@ -26,12 +26,12 @@ let next_link s =
       in
       link
 
-let fetch apai_url client token =
+let fetch api_url client token =
   Eio.Switch.run @@ fun sw ->
   let headers =
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
-  let resp, body = Client.get ~headers ~sw client (Uri.of_string apai_url) in
+  let resp, body = Client.get ~headers ~sw client (Uri.of_string api_url) in
 
   if Http.Status.compare resp.status `OK = 0 then
     Some

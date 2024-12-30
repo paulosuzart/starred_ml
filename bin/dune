@@ -3,9 +3,4 @@
  (preprocess
   (pps ppx_deriving.show ppx_deriving.ord))
  (name main)
- (libraries
-  starred_ml
-  ppx_deriving
-  cmdliner
-  logs.fmt
-  logs.threaded))
+ (libraries starred_ml ppx_deriving cmdliner logs.fmt logs.threaded))

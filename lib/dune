@@ -1,8 +1,8 @@
 (library
  (name starred_ml)
- (preprocess (pps ppx_deriving_yojson ppx_deriving.show ppx_deriving.ord))
- (libraries 
- 
+ (preprocess
+  (pps ppx_deriving_yojson ppx_deriving.show ppx_deriving.ord))
+ (libraries
   eio.unix
   eio_main
   cohttp-eio
@@ -13,5 +13,5 @@
   logs
   jingoo
   re2
- 
- ppx_deriving_yojson))
+  slug
+  ppx_deriving_yojson))
