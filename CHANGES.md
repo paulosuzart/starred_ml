@@ -1,3 +1,7 @@
+## 0.1.0
+- Adds a `slug` attribute to the `item` (repository being rendered).
+- Breaking change: The `jingoo` variable `languages` is now an object with `slug` and `name` attributes.
+
 ## 0.0.5
 
 - More stable sorting

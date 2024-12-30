@@ -8,7 +8,6 @@
   cohttp-eio
   tls-eio
   fmt
-  mirage-crypto-rng-eio
   yojson
   logs
   jingoo
