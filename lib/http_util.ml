@@ -5,7 +5,11 @@ let null_auth ?ip:_ ~host:_ _ = Ok None
 
 (** Effectively calls the https endpoint *)
 let https ~authenticator =
-  let tls_config = Tls.Config.client ~authenticator () in
+  let tls_config =
+    match Tls.Config.client ~authenticator () with
+    | Error (`Msg msg) -> failwith ("tls configuration problem: " ^ msg)
+    | Ok tls_config -> tls_config
+  in
   fun uri raw ->
     let host =
       Uri.host uri
@@ -13,7 +17,8 @@ let https ~authenticator =
     in
     Tls_eio.client_of_flow ?host tls_config raw
 
-(** Github uses rel links to indicate the next page. It's better to rely on them instead of keeping a page counter *)
+(** Github uses rel links to indicate the next page. It's better to rely on them
+    instead of keeping a page counter *)
 let next_link s =
   Eio.traceln "%s" @@ Http.Header.to_string s;
   match Http.Header.get s "Link" with
@@ -26,12 +31,12 @@ let next_link s =
       in
       link
 
-let fetch apai_url client token =
+let fetch api_url client token =
   Eio.Switch.run @@ fun sw ->
   let headers =
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
-  let resp, body = Client.get ~headers ~sw client (Uri.of_string apai_url) in
+  let resp, body = Client.get ~headers ~sw client (Uri.of_string api_url) in
 
   if Http.Status.compare resp.status `OK = 0 then
     Some

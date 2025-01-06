@@ -29,13 +29,13 @@
   (yojson
    (>= 2.1.2))
   (tls-eio
-   (>= 0.17.3))
+   (>= 1.0.4))
   (ppx_deriving_yojson
    (>= 3.7.0))
   (ppx_deriving
    (>= 5.2.1))
   (mirage-crypto-rng-eio
-   (>= 0.11.3))
+   (>= 1.1.0))
   (logs
    (>= 0.7.0))
   (jingoo
@@ -43,10 +43,12 @@
   (fmt
    (>= 0.9.0))
   (eio_main
-   (>= 1.0))
+   (>= 1.2))
   (eio
-   (>= 1.0))
+   (>= 1.2))
   (cohttp-eio
-   (>= 6.0.0~beta2))
+   (>= 6.0.0))
+  (slug
+   (>= 1.0.1))
   ocaml
   dune))

@@ -32,12 +32,15 @@ Awesome Stars
 
 Languages
 ---
+
+Total of `7` Languages starred:
+
    - [C](#C)
    - [C#](#C#)
    - [C++](#C++)
    - [Haskell](#Haskell)
    - [Java](#Java)
-   - [Jupyter Notebook](#Jupyter Notebook)
+   - [Jupyter Notebook](#Jupyter-Notebook)
    - [Lua](#Lua)
  ...
 
@@ -72,11 +75,12 @@ You can reuse the provided template [here](default.jingoo) and customize as you 
 
 The availabe variables are:
    - `lang_count` - The total count of languages found (Including `Not set`)
-   - `languages` - a list of languages detected across all starred repos
+   - `languages` - a list of languages detected across all starred repos. The slug of the language is provided.
    - `by_language` - a list of objects representing starred repositories with the following keys:
-      - `language` - the language of in question
+      - `language` - the slug language of in question
       - `starred` - a list of objects with the following keys:
          - `name` - name of the repository
+         - `language_slug` - slug version of the language
          - `html_url` - Github url
          - `description` - repository description
          - `owner_login` - the repository owner login

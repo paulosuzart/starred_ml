@@ -8,4 +8,5 @@
   ppx_deriving
   cmdliner
   logs.fmt
-  logs.threaded))
+  logs.threaded
+  mirage-crypto-rng-eio))

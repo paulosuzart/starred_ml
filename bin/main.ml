@@ -13,6 +13,13 @@ let template =
     value & opt file "default.jingoo"
     & info [ "j"; "template" ] ~docv:"TEMPLATE" ~doc)
 
+let max_pages =
+  let doc = "Max number of pages to be used" in
+  Arg.(
+    value
+    & opt (some int) None
+    & info [ "m"; "max-pages" ] ~docv:"MAX_PAGES" ~doc)
+
 let token =
   let env =
     let doc = "Github Token." in
@@ -35,23 +42,25 @@ let url =
     & opt string "https://api.github.com/user/starred"
     & info [ "u"; "url" ] ~env ~docv:"GITHUB_URL" ~doc)
 
-let fetch url token template =
+let fetch (max_pages : int option) url token template =
   Eio_main.run @@ fun env ->
   Mirage_crypto_rng_eio.run (module Mirage_crypto_rng.Fortuna) env @@ fun () ->
   let client =
     Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
   in
-  let rec fetch_github l acc =
+  let rec fetch_github l acc curr_page =
     match fetch l client token with
-    | Some (r, Some n) -> fetch_github n (Github.from_string r @ acc)
-    | Some (r, None) -> Github.from_string r @ acc
-    | None -> []
+    | Some (r, Some next_url)
+      when Option.value ~default:max_int max_pages >= curr_page ->
+        fetch_github next_url (acc @ Github.from_string r) (curr_page + 1)
+    | Some (r, _) -> acc @ Github.from_string r
+    | None -> acc
   in
-  let content = fetch_github (Format.sprintf "%s?per_page=100" url) [] in
+  let content = fetch_github (Format.sprintf "%s?per_page=100" url) [] 1 in
   Eio.Stdenv.stdout env
   |> Eio.Flow.copy_string @@ print_content content template
 
-let fetch_t = Term.(const fetch $ url $ token $ template)
+let fetch_t = Term.(const fetch $ max_pages $ url $ token $ template)
 
 let cmd =
   let doc = "Syncs Github starred items for the authenticated user" in
