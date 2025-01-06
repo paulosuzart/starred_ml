@@ -1,5 +1,5 @@
 ## 0.0.6
-- Adds a `slug` attribute to the `item` (repository being rendered) with the slug of the language.
+- Adds a `language_slug` attribute to the `item` (repository being rendered) with the slug of the language.
 - Languages sent to `jingoo` template now are the slug version of the language.
 
 ## 0.0.5

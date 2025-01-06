@@ -22,7 +22,7 @@ let test_group () =
       language = Some "Java";
       html_url = "example.com";
       owner = { login = "auser" };
-      slug = Slug.slugify "Java" ~lowercase:false;
+      language_slug = Slug.slugify "Java" ~lowercase:false;
     }
   and sample_java_repo2 =
     {
@@ -32,7 +32,7 @@ let test_group () =
       language = Some "Java";
       html_url = "example.com";
       owner = { login = "viola" };
-      slug = Slug.slugify "Java" ~lowercase:false;
+      language_slug = Slug.slugify "Java" ~lowercase:false;
     }
   and sample_ocaml_repo =
     {
@@ -42,7 +42,7 @@ let test_group () =
       language = Some "Ocaml";
       html_url = "example.com";
       owner = { login = "bar" };
-      slug = Slug.slugify "Ocaml" ~lowercase:false;
+      language_slug = Slug.slugify "Ocaml" ~lowercase:false;
     }
   in
   Alcotest.(check starred_testable)
@@ -76,7 +76,7 @@ let test_with_slug () =
     | [] -> failwith "Non empty list needed for our test"
     | x :: _ -> x
   in
-  Alcotest.(check string) "Repos get a slug" repo.slug "Vim-Script"
+  Alcotest.(check string) "Repos get a slug" repo.language_slug "Vim-Script"
 
 let testable_link = Alcotest.testable option_pp ( = )
 
