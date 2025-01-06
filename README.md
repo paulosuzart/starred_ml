@@ -37,7 +37,7 @@ Languages
    - [C++](#C++)
    - [Haskell](#Haskell)
    - [Java](#Java)
-   - [Jupyter Notebook](#Jupyter Notebook)
+   - [Jupyter Notebook](#Jupyter-Notebook)
    - [Lua](#Lua)
  ...
 
@@ -77,6 +77,7 @@ The availabe variables are:
       - `language` - the language of in question
       - `starred` - a list of objects with the following keys:
          - `name` - name of the repository
+         - `slug` - slug version of the language
          - `html_url` - Github url
          - `description` - repository description
          - `owner_login` - the repository owner login
