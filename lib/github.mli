@@ -8,6 +8,7 @@ type starred = {
   language : string option;
   html_url : string;
   owner : owner;
+  slug : string;
 }
 [@@deriving show, yojson { strict = false; exn = true }]
 

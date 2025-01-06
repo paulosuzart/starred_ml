@@ -10,7 +10,7 @@ Languages
 Languages starred: {{ lang_count }}:
 
 {%- for lang in languages %}
-   - [{{ lang.name }}](#{{ lang.slug }})
+   - [{{ lang }}](#{{ lang }})
 {%- endfor %}
 
 Contents

@@ -8,15 +8,7 @@ let unique_lang (bz : (string * starred list) list) =
     match b with [] -> acc | (lang, _) :: xs -> unique' xs (lang :: acc)
   in
   let u = unique' bz [] |> List.rev in
-  Jg_types.Tlist
-    (List.map
-       (fun w ->
-         Jg_types.Tobj
-           [
-             ("slug", Jg_types.Tstr (Slug.slugify w ~lowercase:false));
-             ("name", Jg_types.Tstr w);
-           ])
-       u)
+  Jg_types.Tlist (List.map (fun w -> Jg_types.Tstr w) u)
 
 let print_content items template =
   let bz = Github.by_language items in
@@ -34,9 +26,7 @@ let print_content items template =
                      Jg_types.Tobj
                        [
                          ("name", Jg_types.Tstr i.name);
-                         ( "slug",
-                           Jg_types.Tstr (Slug.slugify i.name ~lowercase:false)
-                         );
+                         ("slug", Jg_types.Tstr i.slug);
                          ("html_url", Jg_types.Tstr i.html_url);
                          ( "description",
                            match i.description with
