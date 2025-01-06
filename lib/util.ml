@@ -13,7 +13,7 @@ let unique_lang (bz : (string * starred list) list) =
 let print_content items template =
   let bz = Github.by_language items in
   let unique_languages = unique_lang bz in
-  let m =
+  let by_language =
     List.map
       (fun (language, items') ->
         Jg_types.Tobj
@@ -26,7 +26,6 @@ let print_content items template =
                      Jg_types.Tobj
                        [
                          ("name", Jg_types.Tstr i.name);
-                         ("slug", Jg_types.Tstr i.slug);
                          ("html_url", Jg_types.Tstr i.html_url);
                          ( "description",
                            match i.description with
@@ -43,6 +42,6 @@ let print_content items template =
     [
       ("lang_count", Jg_types.Tint count);
       ("languages", unique_languages);
-      ("by_language", Jg_types.Tlist m);
+      ("by_language", Jg_types.Tlist by_language);
     ]
     template

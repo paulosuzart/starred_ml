@@ -17,7 +17,7 @@ Contents
 ---
 
 {% for item in by_language -%}
-## <a name="{{item.slug}}"></a>{{ item.language }}
+## <a name="{{ item.language }}"></a>{{ item.language }}
 
 {%- for repo in item.starred %}
    - [{{repo.owner_login}}/{{ repo.name }}]({{ repo.html_url }}) - {{ repo.description }}

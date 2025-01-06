@@ -17,7 +17,7 @@ type starred_response = starred list
 
 let slug = function
   | Some lang -> Slug.slugify ~lowercase:false lang
-  | None -> "Not-Set"
+  | None -> Slug.slugify ~lowercase:false "Not-Set"
 
 let with_slug (s : starred) : starred = { s with slug = slug s.language }
 

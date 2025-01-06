@@ -48,31 +48,15 @@ let fetch (max_pages : int option) url token template =
   let client =
     Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
   in
-  (* The rec function using max pages is generated here *)
-  let fetch_github_with_max max =
-    let rec fetch_github l acc (curr_page : int) =
-      match fetch l client token with
-      | Some (r, Some next_url) when curr_page <= max ->
-          fetch_github next_url (Github.from_string r @ acc) (curr_page + 1)
-      | Some (r, _) -> Github.from_string r @ acc
-      | None -> []
-    in
-    fetch_github
-  in
-  (* The regular function without max page is pretty similar. It has no current_page tracking *)
-  let rec fetch_github l acc =
+  let rec fetch_github l acc curr_page =
     match fetch l client token with
-    | Some (r, Some next_url) ->
-        fetch_github next_url (Github.from_string r @ acc)
-    | Some (r, _) -> Github.from_string r @ acc
-    | None -> []
+    | Some (r, Some next_url)
+      when Option.value ~default:max_int max_pages >= curr_page ->
+        fetch_github next_url (acc @ Github.from_string r) (curr_page + 1)
+    | Some (r, _) -> acc @ Github.from_string r
+    | None -> acc
   in
-  let content =
-    match max_pages with
-    | Some m ->
-        (fetch_github_with_max m) (Format.sprintf "%s?per_page=100" url) [] 1
-    | None -> fetch_github (Format.sprintf "%s?per_page=100" url) []
-  in
+  let content = fetch_github (Format.sprintf "%s?per_page=100" url) [] 1 in
   Eio.Stdenv.stdout env
   |> Eio.Flow.copy_string @@ print_content content template
 
