@@ -19,16 +19,17 @@ let slug = function
   | Some lang -> Slug.slugify ~lowercase:false lang
   | None -> Slug.slugify ~lowercase:false "Not-Set"
 
-let with_slug (s : starred) : starred = { s with language_slug = slug s.language }
+let with_slug (s : starred) : starred =
+  { s with language_slug = slug s.language }
 
 let from_string s =
   Yojson.Safe.from_string s |> starred_response_of_yojson_exn
   |> List.map with_slug
 
-(** group_by_first will group starred items by its language, if present.
-    returns a assoc list of starred items. The list is sorted by language
-    alphabetically. Each * left value of a language (the list of starred) is
-    also sorted alphabetically. *)
+(** group_by_first will group starred items by its language, if present. returns
+    a assoc list of starred items. The list is sorted by language
+    alphabetically. Each left value of a language (the list of starred) is also
+    sorted alphabetically. *)
 let group_by_first lst =
   let ht = Hashtbl.create 30 in
   List.iter

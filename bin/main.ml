@@ -48,8 +48,9 @@ let fetch (max_pages : int option) url token template =
   let client =
     Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
   in
+  Eio.Switch.run @@ fun sw ->
   let rec fetch_github l acc curr_page =
-    match fetch l client token with
+    match fetch ~sw l client token with
     | Some (r, Some next_url)
       when Option.value ~default:max_int max_pages >= curr_page ->
         fetch_github next_url (acc @ Github.from_string r) (curr_page + 1)

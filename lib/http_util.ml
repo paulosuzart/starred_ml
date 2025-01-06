@@ -31,8 +31,7 @@ let next_link s =
       in
       link
 
-let fetch api_url client token =
-  Eio.Switch.run @@ fun sw ->
+let fetch ~sw api_url client token =
   let headers =
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
