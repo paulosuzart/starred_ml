@@ -32,6 +32,9 @@ Awesome Stars
 
 Languages
 ---
+
+Total of `7` Languages starred:
+
    - [C](#C)
    - [C#](#C#)
    - [C++](#C++)
