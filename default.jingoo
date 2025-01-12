@@ -9,14 +9,14 @@ Awesome Stars
 Total of `{{ lang_count }}` Languages starred:
 
 {%- for lang in languages %}
-   - [{{ lang }}](#{{ lang }}) {% if lang == "NotSet" %} Repos without language specified {% endif %}
+   - [{{ lang }}](#{{ lang | urlencode }}) {% if lang == "NotSet" %} Repos without language specified {% endif %}
 {%- endfor %}
 
 # Contents
 
 
 {% for item in by_language -%}
-## <a name="{{ item.language }}"></a>{{ item.language }}
+## <a name="{{ item.language | urlencode }}"></a>{{ item.language }}
 
 {%- for repo in item.starred %}
    - [{{repo.owner_login}}/{{ repo.name }}]({{ repo.html_url }}) - {{ repo.description }}
