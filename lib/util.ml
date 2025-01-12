@@ -1,18 +1,15 @@
 open Jingoo
 open Github
 
+let language_not_set = "Not Set"
 let render_template models template = Jg_template.from_file template ~models
-
-let unique_lang (bz : (string * starred list) list) =
-  let rec unique' b acc =
-    match b with [] -> acc | (lang, _) :: xs -> unique' xs (lang :: acc)
-  in
-  let u = unique' bz [] |> List.rev in
-  Jg_types.Tlist (List.map (fun w -> Jg_types.Tstr w) u)
 
 let print_content items template =
   let bz = Github.by_language items in
-  let unique_languages = unique_lang bz in
+  let unique_languages = Github.languages ~default_language:language_not_set items in
+  let unique_language_model =
+    List.map (fun i -> Jg_types.Tstr i) unique_languages
+  in
   let by_language =
     List.map
       (fun (language, items') ->
@@ -26,6 +23,10 @@ let print_content items template =
                      Jg_types.Tobj
                        [
                          ("name", Jg_types.Tstr i.name);
+                         ( "language",
+                           match i.language with
+                           | Some l -> Jg_types.Tstr l
+                           | None -> Jg_types.Tstr language_not_set );
                          ("html_url", Jg_types.Tstr i.html_url);
                          ( "description",
                            match i.description with
@@ -37,11 +38,32 @@ let print_content items template =
           ])
       bz
   in
-  let count = List.length bz in
+  let repositories =
+    List.map
+      (fun i ->
+        Jg_types.Tobj
+          [
+            ("name", Jg_types.Tstr i.name);
+            ( "language",
+              match i.language with
+              | Some l -> Jg_types.Tstr l
+              | None -> Jg_types.Tstr language_not_set );
+            ("html_url", Jg_types.Tstr i.html_url);
+            ( "description",
+              match i.description with
+              | Some d -> Jg_types.Tstr d
+              | None -> Jg_types.Tnull );
+            ("owner_login", Jg_types.Tstr i.owner.login);
+          ])
+      items
+  in
+  let count = List.length unique_languages in
   render_template
     [
       ("lang_count", Jg_types.Tint count);
-      ("languages", unique_languages);
+      ("languages", Jg_types.Tlist unique_language_model);
+      ("repositories", Jg_types.Tlist repositories);
+      (* Will be removed in the future *)
       ("by_language", Jg_types.Tlist by_language);
     ]
     template

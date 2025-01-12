@@ -12,5 +12,4 @@
   logs
   jingoo
   re2
-  slug
   ppx_deriving_yojson))

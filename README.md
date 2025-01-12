@@ -75,15 +75,18 @@ You can reuse the provided template [here](default.jingoo) and customize as you 
 
 The availabe variables are:
    - `lang_count` - The total count of languages found (Including `Not set`)
-   - `languages` - a list of languages detected across all starred repos. The slug of the language is provided.
+   - `languages` - a list of languages detected across all starred repos.
    - `by_language` - a list of objects representing starred repositories with the following keys:
       - `language` - the slug language of in question
       - `starred` - a list of objects with the following keys:
          - `name` - name of the repository
-         - `language_slug` - slug version of the language
+         - `language` - slug version of the language
          - `html_url` - Github url
          - `description` - repository description
          - `owner_login` - the repository owner login
+
+> [!TIP]
+> Use `urlencode` filter if you wanna modify when referring to anchor links if you wanna modify `default.jingoo` template. This filter will help generating url friendly anchor list.
 
 Similar projects
 ---

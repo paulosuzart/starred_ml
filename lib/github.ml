@@ -15,6 +15,7 @@ type starred_response = starred list
 [@@deriving yojson { strict = false; exn = true }]
 
 let from_string s = Yojson.Safe.from_string s |> starred_response_of_yojson_exn
+let language_not_set = "Not Set"
 
 (** group_by_first will group starred items by its language, if present. returns
     a assoc list of starred items. The list is sorted by language
@@ -38,7 +39,16 @@ let by_language s =
   let bz =
     List.map
       (fun i ->
-        match i.language with Some l -> (l, i) | None -> ("Not set", i))
+        match i.language with Some l -> (l, i) | None -> (language_not_set, i))
       s
   in
   group_by_first bz
+
+module StringSet = Set.Make (String)
+
+let languages ?(default_language = language_not_set) starred_items =
+  StringSet.elements @@ StringSet.of_list
+  @@ List.map
+       (fun item ->
+         match item.language with Some l -> l | None -> default_language)
+       starred_items

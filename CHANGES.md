@@ -1,3 +1,8 @@
+## 0.0.7
+- Removed `slug` dependency that was actually not enough for the intention.
+- Encourages raw jingoo filters for encoding urls. As in `item.language | urlencode`.
+- The `dafault.jingoo` template now takes a the github repositories (the `starred list` type) and uses `groupby` Jingoo's feature to print each repository under the corresponding language.
+
 ## 0.0.6
 - Adds a `language_slug` attribute to the `item` (repository being rendered) with the slug of the language.
 - Languages sent to `jingoo` template now are the slug version of the language.

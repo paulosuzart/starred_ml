@@ -6,19 +6,17 @@ Awesome Stars
 
 # Languages
 
-Total of `{{ lang_count }}` Languages starred:
+Total of `{{ languages | length }}` Languages starred:
 
 {%- for lang in languages %}
-   - [{{ lang }}](#{{ lang | urlencode }}) {% if lang == "NotSet" %} Repos without language specified {% endif %}
+   - [{{ lang }}](#{{ lang | urlencode }}) {% if lang == "Not Set" %} Repos without language specified {% endif %}
 {%- endfor %}
 
 # Contents
+{% for group in repositories | groupby (attr('language')) | sort (attribute='language') %}
+## <a name="{{ group.grouper | urlencode }}"></a>{{ group.grouper }}
 
-
-{% for item in by_language -%}
-## <a name="{{ item.language | urlencode }}"></a>{{ item.language }}
-
-{%- for repo in item.starred %}
+{%- for repo in group.list | sort (attribute='name') %}
    - [{{repo.owner_login}}/{{ repo.name }}]({{ repo.html_url }}) - {{ repo.description }}
 {%- endfor %}
 

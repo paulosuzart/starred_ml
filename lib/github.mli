@@ -20,3 +20,6 @@ val from_string : string -> starred_response
 val by_language : starred list -> (string * starred list) list
 (** Converts a list of starred items into a struc grouped by language like
     [("java", [starred; starred]), ("scala", [starred;...])] *)
+
+val languages : ?default_language:string -> starred list -> string list
+(** Return the languages for the repositories. *)
