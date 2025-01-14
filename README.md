@@ -12,7 +12,7 @@ opam update
 opam install starred_ml
 
 
-TOKEN={{your github personal token}} starred_ml > README.md 
+TOKEN={{your github personal token}} starred_ml render > README.md 
 ```
 
 For full option list, run `starred_ml --help`.
