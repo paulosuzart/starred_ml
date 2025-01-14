@@ -22,7 +22,6 @@ let test_group () =
       language = Some "Java";
       html_url = "example.com";
       owner = { login = "auser" };
-      language_slug = Slug.slugify "Java" ~lowercase:false;
     }
   and sample_java_repo2 =
     {
@@ -32,7 +31,6 @@ let test_group () =
       language = Some "Java";
       html_url = "example.com";
       owner = { login = "viola" };
-      language_slug = Slug.slugify "Java" ~lowercase:false;
     }
   and sample_ocaml_repo =
     {
@@ -42,7 +40,6 @@ let test_group () =
       language = Some "Ocaml";
       html_url = "example.com";
       owner = { login = "bar" };
-      language_slug = Slug.slugify "Ocaml" ~lowercase:false;
     }
   in
   Alcotest.(check starred_testable)
@@ -55,28 +52,6 @@ let test_group () =
 
 let option_pp ppf o =
   match o with Some l -> Fmt.pf ppf "%s" l | None -> Fmt.pf ppf "No next link"
-
-let test_with_slug () =
-  let src =
-    Github.from_string
-      {|[
-        {"name" : "Sample with Slug",
-         "language" : "Vim Script",
-         "owner": {
-            "login" : "foo"
-         },
-         "description" : null,
-         "html_url" : "example.com",
-         "topics" : []
-        }
-      ]|}
-  in
-  let repo =
-    match src with
-    | [] -> failwith "Non empty list needed for our test"
-    | x :: _ -> x
-  in
-  Alcotest.(check string) "Repos get a slug" repo.language_slug "Vim-Script"
 
 let testable_link = Alcotest.testable option_pp ( = )
 
@@ -99,6 +74,5 @@ let () =
         [
           test_case "No Pagination" `Quick test_no_next_page;
           test_case "Next Pat" `Quick test_next_page;
-          test_case "Slug test" `Quick test_with_slug;
         ] );
     ]

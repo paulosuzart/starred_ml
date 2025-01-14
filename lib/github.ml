@@ -8,23 +8,14 @@ type starred = {
   language : string option;
   html_url : string;
   owner : owner;
-  language_slug : string; [@default "Not-Set"]
 }
 [@@deriving show, yojson { strict = false; exn = true }]
 
 type starred_response = starred list
 [@@deriving yojson { strict = false; exn = true }]
 
-let slug = function
-  | Some lang -> Slug.slugify ~lowercase:false lang
-  | None -> Slug.slugify ~lowercase:false "Not-Set"
-
-let with_slug (s : starred) : starred =
-  { s with language_slug = slug s.language }
-
-let from_string s =
-  Yojson.Safe.from_string s |> starred_response_of_yojson_exn
-  |> List.map with_slug
+let from_string s = Yojson.Safe.from_string s |> starred_response_of_yojson_exn
+let language_not_set = "Not Set"
 
 (** group_by_first will group starred items by its language, if present. returns
     a assoc list of starred items. The list is sorted by language
@@ -45,5 +36,19 @@ let group_by_first lst =
   |> List.sort (fun (c1, _) (c2, _) -> Stdlib.compare c1 c2)
 
 let by_language s =
-  let bz = List.map (fun i -> (i.language_slug, i)) s in
+  let bz =
+    List.map
+      (fun i ->
+        match i.language with Some l -> (l, i) | None -> (language_not_set, i))
+      s
+  in
   group_by_first bz
+
+module StringSet = Set.Make (String)
+
+let languages ?(default_language = language_not_set) starred_items =
+  StringSet.elements @@ StringSet.of_list
+  @@ List.map
+       (fun item ->
+         match item.language with Some l -> l | None -> default_language)
+       starred_items
