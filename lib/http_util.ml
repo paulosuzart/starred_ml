@@ -31,14 +31,26 @@ let next_link s =
       in
       link
 
+let handle_status status =
+  match status with
+  | `OK -> ()
+  | `Unauthorized ->
+      failwith
+        (Http.Status.to_string status ^ ". Please check the provided token.")
+  | #Http.Status.client_error | #Http.Status.server_error ->
+      failwith (Http.Status.to_string status)
+  | status ->
+      raise
+        (Invalid_argument
+           (Printf.sprintf "Catastrophic failure: unexpected status %s"
+              (Http.Status.to_string status)))
+
 let fetch ~sw api_url client token =
   let headers =
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
   let resp, body = Client.get ~headers ~sw client (Uri.of_string api_url) in
-
-  if Http.Status.compare resp.status `OK = 0 then
-    Some
-      ( Eio.Buf_read.(parse_exn take_all) body ~max_size:max_int,
-        next_link resp.headers )
-  else None
+  handle_status resp.status;
+  Some
+    ( Eio.Buf_read.(parse_exn take_all) body ~max_size:max_int,
+      next_link resp.headers )

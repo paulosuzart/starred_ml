@@ -1,4 +1,4 @@
-(lang dune 3.14)
+(lang dune 3.21)
 
 (name starred_ml)
 
@@ -24,7 +24,7 @@
    (>= v0.16.0))
   (alcotest
    (and
-    (>= 1.7.0)
+    (>= 1.9.1)
     :with-test))
   (yojson
    (>= 2.1.2))
@@ -34,8 +34,8 @@
    (>= 3.7.0))
   (ppx_deriving
    (>= 5.2.1))
-  (mirage-crypto-rng-eio
-   (>= 1.1.0))
+  (mirage-crypto-rng
+   (>= 1.2.0))
   (logs
    (>= 0.7.0))
   (jingoo
@@ -43,12 +43,10 @@
   (fmt
    (>= 0.9.0))
   (eio_main
-   (>= 1.2))
+   (>= 1.3))
   (eio
-   (>= 1.2))
+   (>= 1.3))
   (cohttp-eio
-   (>= 6.0.0))
-  (slug
-   (>= 1.0.1))
+   (>= 6.2.1))
   ocaml
   dune))

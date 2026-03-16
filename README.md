@@ -12,10 +12,27 @@ opam update
 opam install starred_ml
 
 
-TOKEN={{your github personal token}} starred_ml render > README.md 
+TOKEN={{your github personal token}} starred_ml render > README.md
 ```
 
 For full option list, run `starred_ml --help`.
+
+## Development
+
+Clone the repo, then create and configure an opam switch:
+
+```shell
+opam switch create starred_ml ocaml-base-compiler.5.4.1
+eval $(opam env --switch=starred_ml)
+opam install . --deps-only --with-test -y
+```
+
+Build and run tests:
+
+```shell
+dune build
+dune test
+```
 
 
 _See [Templating](#Templating) section for details on the output markdown._
