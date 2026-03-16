@@ -6,6 +6,7 @@ module Github = Starred_ml.Github
 
 let () = Logs.set_reporter (Logs_fmt.reporter ())
 and () = Logs_threaded.enable ()
+and () = Printexc.record_backtrace true
 
 module Render_cli = struct
   let name = "render"
@@ -46,24 +47,32 @@ module Render_cli = struct
       & info [ "u"; "url" ] ~env ~docv:"GITHUB_URL" ~doc)
 
   let fetch (max_pages : int option) url token template =
-    Eio_main.run @@ fun env ->
-    Mirage_crypto_rng_eio.run (module Mirage_crypto_rng.Fortuna) env
-    @@ fun () ->
-    let client =
-      Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
-    in
-    Eio.Switch.run @@ fun sw ->
-    let rec fetch_github l acc curr_page =
-      match fetch ~sw l client token with
-      | Some (r, Some next_url)
-        when Option.value ~default:max_int max_pages >= curr_page ->
-          fetch_github next_url (acc @ Github.from_string r) (curr_page + 1)
-      | Some (r, _) -> acc @ Github.from_string r
-      | None -> acc
-    in
-    let content = fetch_github (Format.sprintf "%s?per_page=100" url) [] 1 in
-    Eio.Stdenv.stdout env
-    |> Eio.Flow.copy_string @@ print_content content template
+    try
+      Eio_main.run @@ fun env ->
+      Mirage_crypto_rng_unix.use_default ();
+      let client =
+        Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
+      in
+      Eio.Switch.run @@ fun sw ->
+      let rec fetch_github l acc curr_page =
+        match fetch ~sw l client token with
+        | Some (r, Some next_url)
+          when Option.value ~default:max_int max_pages >= curr_page ->
+            fetch_github next_url (acc @ Github.from_string r) (curr_page + 1)
+        | Some (r, _) -> acc @ Github.from_string r
+        | None -> acc
+      in
+      let content = fetch_github (Format.sprintf "%s?per_page=100" url) [] 1 in
+      Eio.Stdenv.stdout env
+      |> Eio.Flow.copy_string @@ print_content content template
+    with
+    | Failure msg ->
+      Printf.eprintf "Error: %s\n" msg;
+      exit 1
+    | exn ->
+      Printf.eprintf "Fatal: %s\n" (Printexc.to_string exn);
+      Printexc.print_backtrace stderr;
+      exit 1
 
   let fetch_t = Term.(const fetch $ max_pages $ url $ token $ template)
 

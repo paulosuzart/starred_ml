@@ -9,4 +9,4 @@
   cmdliner
   logs.fmt
   logs.threaded
-  mirage-crypto-rng-eio))
+  mirage-crypto-rng.unix))

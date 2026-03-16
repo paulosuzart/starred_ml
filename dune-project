@@ -34,8 +34,8 @@
    (>= 3.7.0))
   (ppx_deriving
    (>= 5.2.1))
-  (mirage-crypto-rng-eio
-   (>= 1.1.0))
+  (mirage-crypto-rng
+   (>= 1.2.0))
   (logs
    (>= 0.7.0))
   (jingoo
