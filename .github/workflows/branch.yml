@@ -4,16 +4,16 @@ on:
       - main
 
 permissions:
-  contents: read 
+  contents: read
   checks: write
   id-token: write
   pull-requests: write
-  
+
 jobs:
   build:
     strategy:
       fail-fast: false
-      
+
     runs-on: ubuntu-22.04
 
     steps:
@@ -23,9 +23,9 @@ jobs:
           path: ${{ github.event.repository.name }}
 
       - name: Set-up OCaml
-        uses: ocaml/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
-          ocaml-compiler: '5.4.1'
+          ocaml-compiler: "5.4.1"
 
       - run: opam install . --deps-only --with-test
         working-directory: ${{ github.event.repository.name }}
@@ -36,9 +36,8 @@ jobs:
       - run: opam exec -- dune runtest
         working-directory: ${{ github.event.repository.name }}
 
-      - run: opam install dune-release 
+      - run: opam install dune-release
         working-directory: ${{ github.event.repository.name }}
 
       - run: opam exec -- dune-release lint
         working-directory: ${{ github.event.repository.name }}
-

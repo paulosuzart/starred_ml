@@ -2,11 +2,10 @@
 
 - Replaced deprecated `Mirage_crypto_rng_eio.run` with `Mirage_crypto_rng_unix.use_default` from `mirage-crypto-rng.unix`.
 - Improved error handling: HTTP errors (4xx/5xx) print a clean message; unexpected failures show a full stack trace.
-- Extracted `handle_status` from `fetch` and added tests for 401, 403, and 500 responses.
-- Fixed duplicate linker flag warning on macOS (Xcode 15+) via `-no_warn_duplicate_libraries`.
 - Bumped dependencies: `eio` and `eio_main` >= 1.3, `cohttp-eio` >= 6.2.1, `mirage-crypto-rng` >= 1.2.0, `alcotest` >= 1.9.1, `dune` lang 3.21.
 - Updated CI to OCaml 5.4.1.
 - Updated README with development setup instructions.
+- Updated OCaml setup GitHub Actions version.
 
 ## 0.0.7
 - IMPORTANT: now use `starred_ml render` for rendering the template.
