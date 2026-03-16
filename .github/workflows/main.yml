@@ -60,7 +60,7 @@ jobs:
 
       - run: |
           opam exec -- dune-release distrib
-          opam exec -- dune-release publish -y --token=${{ secrets.PERSONAL_TOKEN }} -v
+          opam exec -- dune-release publish -y --token=${{ github.token }} -v
         working-directory: ${{ github.event.repository.name }}
 
       - run: |
