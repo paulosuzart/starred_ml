@@ -48,7 +48,5 @@
    (>= 1.3))
   (cohttp-eio
    (>= 6.2.1))
-  (slug
-   (>= 1.0.1))
   ocaml
   dune))

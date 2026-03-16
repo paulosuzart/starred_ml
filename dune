@@ -1,3 +1,0 @@
-(env
- (_
-  (link_flags (:standard -ccopt -Wl,-no_warn_duplicate_libraries))))
