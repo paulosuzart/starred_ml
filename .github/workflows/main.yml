@@ -56,6 +56,9 @@ jobs:
           token: ${{ secrets.PERSONAL_TOKEN }}
           persist-credentials: true
 
+      - name: Set opam-repository remote URL with token
+        run: git -C opam-repository remote set-url origin https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/paulosuzart/opam-repository.git
+
       - run: opam exec -- dune-release tag -y -v
         working-directory: ${{ github.event.repository.name }}
 
