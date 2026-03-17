@@ -58,9 +58,9 @@ let option_pp ppf o =
 
 let testable_link = Alcotest.testable option_pp ( = )
 
-(** [test_no_next_page] verifies that [next_link] returns [None] when the
-    [Link] header only contains a [prev] relation, indicating we are on the
-    last page of Github pagination. *)
+(** [test_no_next_page] verifies that [next_link] returns [None] when the [Link]
+    header only contains a [prev] relation, indicating we are on the last page
+    of Github pagination. *)
 let test_no_next_page () =
   Alcotest.(check testable_link)
     "A last page returns None" None

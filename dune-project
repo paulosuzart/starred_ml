@@ -15,7 +15,7 @@
 
 (package
  (name starred_ml)
- (synopsis "Generates a awesome list markdown")
+ (synopsis "Generates an Awesome-style markdown list from GitHub stars")
  (description "Turn your starred items into a awesomeness list of repos")
  (depends
   (cmdliner
@@ -39,7 +39,7 @@
   (logs
    (>= 0.7.0))
   (jingoo
-   (>= 1.5.0))
+   (>= 1.5.2))
   (fmt
    (>= 0.9.0))
   (eio_main
@@ -48,5 +48,6 @@
    (>= 1.3))
   (cohttp-eio
    (>= 6.2.1))
-  ocaml
+  (ocaml
+   (>= 5.2.0))
   dune))

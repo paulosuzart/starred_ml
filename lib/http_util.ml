@@ -20,7 +20,6 @@ let https ~authenticator =
 (** Github uses rel links to indicate the next page. It's better to rely on them
     instead of keeping a page counter *)
 let next_link s =
-  Eio.traceln "%s" @@ Http.Header.to_string s;
   match Http.Header.get s "Link" with
   | None -> None
   | Some l ->
