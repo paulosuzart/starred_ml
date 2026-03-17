@@ -1,5 +1,4 @@
 type owner = { login : string }
-[@@deriving show, yojson { strict = false; exn = true }]
 
 type starred = {
   name : string;
@@ -9,16 +8,17 @@ type starred = {
   html_url : string;
   owner : owner;
 }
-[@@deriving show, yojson { strict = false; exn = true }]
 
 type starred_response = starred list
-[@@deriving yojson { strict = false; exn = true }]
+
+val show_starred : starred -> string
+(** Pretty-prints a [starred] record; used in test assertions. *)
 
 val from_string : string -> starred_response
 (** Converts a result page of starred paged result into a list of starred *)
 
 val by_language : starred list -> (string * starred list) list
-(** Converts a list of starred items into a struc grouped by language like
+(** Converts a list of starred items into a struct grouped by language like
     [("java", [starred; starred]), ("scala", [starred;...])] *)
 
 val languages : ?default_language:string -> starred list -> string list
