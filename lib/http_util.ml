@@ -19,16 +19,14 @@ let https ~authenticator =
 
 (** Github uses rel links to indicate the next page. It's better to rely on them
     instead of keeping a page counter *)
+let next_re = Re2.create_exn "<([^;]+)>; rel=\"next\""
+
 let next_link s =
   match Http.Header.get s "Link" with
   | None -> None
-  | Some l ->
-      let re = Re2.create_exn "<([^;]+)>; rel=\"next\"" in
-      let link =
-        try Some (Re2.find_first_exn ~sub:(`Index 1) re l)
-        with Re2.Exceptions.Regex_match_failed _ -> None
-      in
-      link
+  | Some l -> (
+      try Some (Re2.find_first_exn ~sub:(`Index 1) next_re l)
+      with Re2.Exceptions.Regex_match_failed _ -> None)
 
 let handle_status status =
   match status with
