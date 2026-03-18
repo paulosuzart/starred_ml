@@ -8,6 +8,7 @@
 - Cleaned up `github.mli`: removed `[@@deriving ...]` attributes from type declarations and replaced with explicit `val` signatures for the functions actually used externally, narrowing the public API surface.
 - Added `unix` to `bin/dune` library dependencies.
 - Using [Eio.Stream](https://ocaml-multicore.github.io/eio/eio/Eio/Stream/index.html) to accumulate responses.
+- Added `PAGE_SIZE` cli parameter.
 
 ## 0.0.8
 

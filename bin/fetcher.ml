@@ -25,7 +25,11 @@ let print_summary repo_count elapsed =
     (if repo_count = 1 then "y" else "ies")
     elapsed
 
-let run (max_pages : int option) url token template =
+let run (max_pages : int option) (page_size : int) url token template =
+  if page_size < 1 || page_size > 100 then (
+    Printf.eprintf "Error: --page-size must be between 1 and 100 (got %d)\n"
+      page_size;
+    exit 1);
   total_pages := 0;
   let t0 = Unix.gettimeofday () in
   try
@@ -58,7 +62,7 @@ let run (max_pages : int option) url token template =
               | _ -> ())
           | None -> ()
         in
-        produce (Format.sprintf "%s?per_page=100" url) 1 0;
+        produce (Format.sprintf "%s?per_page=%d" url page_size) 1 0;
         Eio.Stream.add stream None);
     (* Consumer: drains the stream into a Queue (O(1) push per item).
        [Queue.to_seq] traverses front-to-back, preserving GitHub insertion

@@ -42,7 +42,16 @@ module Render_cli = struct
       & opt string "https://api.github.com/user/starred"
       & info [ "u"; "url" ] ~env ~docv:"GITHUB_URL" ~doc)
 
-  let fetch_t = Term.(const Fetcher.run $ max_pages $ url $ token $ template)
+  let page_size =
+    let doc =
+      "Number of results per page returned by the GitHub API. Must be \
+       between 1 and 100. Higher values reduce the number of HTTP requests \
+       required to fetch all starred repositories."
+    in
+    Arg.(value & opt int 100 & info [ "p"; "page-size" ] ~docv:"PAGE_SIZE" ~doc)
+
+  let fetch_t =
+    Term.(const Fetcher.run $ max_pages $ page_size $ url $ token $ template)
 
   let cmd =
     let doc = "Syncs Github starred items for the authenticated user" in
