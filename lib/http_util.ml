@@ -46,7 +46,6 @@ type fetch_config = {
   backoff_base_s : float;
 }
 
-
 let fetch ~sw ~clock ~config api_url client token =
   let headers =
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
@@ -64,17 +63,21 @@ let fetch ~sw ~clock ~config api_url client token =
           body_str,
           next_link resp.Http.Response.headers ))
   in
+  let sleep_with_jitter delay =
+    let jittered = delay +. (0.1 +. Random.float 0.9) in
+    Eio.Time.Mono.sleep clock jittered
+  in
   let rec loop retries delay =
     match attempt () with
     | exception Eio.Time.Timeout ->
         if retries = 0 then failwith "Request timed out after all retries"
         else (
-          Eio.Time.Mono.sleep clock delay;
+          sleep_with_jitter delay;
           loop (retries - 1) (delay *. 2.0))
     | exception (Eio.Io _ as e) ->
         if retries = 0 then raise e
         else (
-          Eio.Time.Mono.sleep clock delay;
+          sleep_with_jitter delay;
           loop (retries - 1) (delay *. 2.0))
     | status, body_str, next_url -> (
         match classify_status status with
@@ -83,7 +86,7 @@ let fetch ~sw ~clock ~config api_url client token =
         | `Transient msg ->
             if retries = 0 then failwith (msg ^ " after all retries")
             else (
-              Eio.Time.Mono.sleep clock delay;
+              sleep_with_jitter delay;
               loop (retries - 1) (delay *. 2.0)))
   in
   loop config.max_retries config.backoff_base_s

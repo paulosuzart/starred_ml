@@ -36,6 +36,7 @@ let run (max_pages : int option) (page_size : int) (timeout_s : float)
   try
     Eio_main.run @@ fun env ->
     Mirage_crypto_rng_unix.use_default ();
+    Random.self_init ();
     let clock = env#mono_clock in
     let config = { timeout_s; max_retries; backoff_base_s = 1.0 } in
     let client =
