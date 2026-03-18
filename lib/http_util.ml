@@ -32,13 +32,13 @@ let classify_status status =
   match status with
   | `OK -> `Ok
   | `Unauthorized ->
-      `Fatal (Http.Status.to_string status ^ ". Please check the provided token.")
+      `Fatal
+        (Http.Status.to_string status ^ ". Please check the provided token.")
   | `Too_many_requests -> `Transient (Http.Status.to_string status)
   | #Http.Status.server_error -> `Transient (Http.Status.to_string status)
   | #Http.Status.client_error -> `Fatal (Http.Status.to_string status)
   | s ->
-      `Fatal
-        (Printf.sprintf "Unexpected status %s" (Http.Status.to_string s))
+      `Fatal (Printf.sprintf "Unexpected status %s" (Http.Status.to_string s))
 
 type fetch_config = {
   timeout_s : float;
@@ -46,7 +46,6 @@ type fetch_config = {
   backoff_base_s : float;
 }
 
-let default_config = { timeout_s = 30.0; max_retries = 3; backoff_base_s = 1.0 }
 
 let fetch ~sw ~clock ~config api_url client token =
   let headers =

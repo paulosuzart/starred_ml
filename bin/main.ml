@@ -44,14 +44,32 @@ module Render_cli = struct
 
   let page_size =
     let doc =
-      "Number of results per page returned by the GitHub API. Must be \
-       between 1 and 100. Higher values reduce the number of HTTP requests \
-       required to fetch all starred repositories."
+      "Number of results per page returned by the GitHub API. Must be between \
+       1 and 100. Higher values reduce the number of HTTP requests required to \
+       fetch all starred repositories."
     in
     Arg.(value & opt int 100 & info [ "p"; "page-size" ] ~docv:"PAGE_SIZE" ~doc)
 
+  let timeout =
+    let doc =
+      "Per-request timeout in seconds. If a GitHub API request (including \
+       reading the response body) does not complete within this duration it is \
+       cancelled and retried up to --max-retries times."
+    in
+    Arg.(value & opt float 600.0 & info [ "T"; "timeout" ] ~docv:"SECONDS" ~doc)
+
+  let max_retries =
+    let doc =
+      "Maximum number of times a failed or timed-out request is retried before \
+       the command exits with an error."
+    in
+    Arg.(
+      value & opt int 3 & info [ "r"; "max-retries" ] ~docv:"MAX_RETRIES" ~doc)
+
   let fetch_t =
-    Term.(const Fetcher.run $ max_pages $ page_size $ url $ token $ template)
+    Term.(
+      const Fetcher.run $ max_pages $ page_size $ timeout $ max_retries $ url
+      $ token $ template)
 
   let cmd =
     let doc = "Syncs Github starred items for the authenticated user" in

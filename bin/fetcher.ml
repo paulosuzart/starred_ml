@@ -25,7 +25,8 @@ let print_summary repo_count elapsed =
     (if repo_count = 1 then "y" else "ies")
     elapsed
 
-let run (max_pages : int option) (page_size : int) url token template =
+let run (max_pages : int option) (page_size : int) (timeout_s : float)
+    (max_retries : int) url token template =
   if page_size < 1 || page_size > 100 then (
     Printf.eprintf "Error: --page-size must be between 1 and 100 (got %d)\n"
       page_size;
@@ -36,6 +37,7 @@ let run (max_pages : int option) (page_size : int) url token template =
     Eio_main.run @@ fun env ->
     Mirage_crypto_rng_unix.use_default ();
     let clock = env#mono_clock in
+    let config = { timeout_s; max_retries; backoff_base_s = 1.0 } in
     let client =
       Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
     in
@@ -51,7 +53,7 @@ let run (max_pages : int option) (page_size : int) url token template =
     Eio.Fiber.fork ~sw (fun () ->
         let rec produce url curr_page frame =
           show_progress frame curr_page max_pages;
-          match fetch ~sw ~clock ~config:default_config url client token with
+          match fetch ~sw ~clock ~config url client token with
           | Some (body, next_url_opt) -> (
               Eio.Stream.add stream (Some (Github.from_string body));
               let within_limit =

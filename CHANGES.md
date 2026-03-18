@@ -9,6 +9,9 @@
 - Added `unix` to `bin/dune` library dependencies.
 - Using [Eio.Stream](https://ocaml-multicore.github.io/eio/eio/Eio/Stream/index.html) to accumulate responses.
 - Added `PAGE_SIZE` cli parameter.
+- Added `--timeout` / `-T` CLI arg (default 600s): per-request timeout in seconds passed to the HTTP fetcher.
+- Added `--max-retries` / `-r` CLI arg (default 3): number of retry attempts on transient failures or timeouts.
+- Added per-request timeout and exponential-backoff retry in `Http_util.fetch` using `Eio.Time.Timeout`.
 
 ## 0.0.8
 
