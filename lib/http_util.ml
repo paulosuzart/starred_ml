@@ -46,6 +46,31 @@ type fetch_config = {
   backoff_base_s : float;
 }
 
+let retry ~sleep_fn ~config ~attempt =
+  let rec loop retries delay =
+    match attempt () with
+    | exception Eio.Time.Timeout ->
+        if retries = 0 then failwith "Request timed out after all retries"
+        else (
+          sleep_fn delay;
+          loop (retries - 1) (delay *. 2.0))
+    | exception (Eio.Io _ as e) ->
+        if retries = 0 then raise e
+        else (
+          sleep_fn delay;
+          loop (retries - 1) (delay *. 2.0))
+    | status, body_str, next_url -> (
+        match classify_status status with
+        | `Ok -> Some (body_str, next_url)
+        | `Fatal msg -> failwith msg
+        | `Transient msg ->
+            if retries = 0 then failwith (msg ^ " after all retries")
+            else (
+              sleep_fn delay;
+              loop (retries - 1) (delay *. 2.0)))
+  in
+  loop config.max_retries config.backoff_base_s
+
 let fetch ~sw ~clock ~config api_url client token =
   let headers =
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
@@ -63,30 +88,7 @@ let fetch ~sw ~clock ~config api_url client token =
           body_str,
           next_link resp.Http.Response.headers ))
   in
-  let sleep_with_jitter delay =
-    let jittered = delay +. (0.1 +. Random.float 0.9) in
-    Eio.Time.Mono.sleep clock jittered
+  let sleep_fn delay =
+    Eio.Time.Mono.sleep clock (delay +. 0.1 +. Random.float 0.9)
   in
-  let rec loop retries delay =
-    match attempt () with
-    | exception Eio.Time.Timeout ->
-        if retries = 0 then failwith "Request timed out after all retries"
-        else (
-          sleep_with_jitter delay;
-          loop (retries - 1) (delay *. 2.0))
-    | exception (Eio.Io _ as e) ->
-        if retries = 0 then raise e
-        else (
-          sleep_with_jitter delay;
-          loop (retries - 1) (delay *. 2.0))
-    | status, body_str, next_url -> (
-        match classify_status status with
-        | `Ok -> Some (body_str, next_url)
-        | `Fatal msg -> failwith msg
-        | `Transient msg ->
-            if retries = 0 then failwith (msg ^ " after all retries")
-            else (
-              sleep_with_jitter delay;
-              loop (retries - 1) (delay *. 2.0)))
-  in
-  loop config.max_retries config.backoff_base_s
+  retry ~sleep_fn ~config ~attempt
