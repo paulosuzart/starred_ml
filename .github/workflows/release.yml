@@ -24,7 +24,7 @@ jobs:
         with:
           ocaml-compiler: "5.4.1"
 
-      - run: opam install . --deps-only
+      - run: opam install . --deps-only --with-test
         working-directory: ${{ github.event.repository.name }}
 
       - run: opam exec -- dune build
