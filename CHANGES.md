@@ -1,3 +1,18 @@
+## 0.0.9
+
+- Extracted HTTP fetch logic into a dedicated `Fetcher` module (`bin/fetcher.ml`), separating it from CLI argument definitions in `bin/main.ml`.
+- Added terminal progress spinner on stderr showing current page and optional page cap (e.g. `/ Fetching page 3 of 5...`); clears itself when done so stdout redirection (e.g. `> out.md`) is unaffected.
+- Added post-fetch summary on stderr: pages fetched, repository count, and elapsed time in seconds (e.g. `✓ 5 pages  •  487 repositories  •  3.2s`).
+- Bumped `jingoo` dependency to `>= 1.5.2`.
+- Fixed `Re2` regex compiled once at module load instead of on every paginated response.
+- Cleaned up `github.mli`: removed `[@@deriving ...]` attributes from type declarations and replaced with explicit `val` signatures for the functions actually used externally, narrowing the public API surface.
+- Added `unix` to `bin/dune` library dependencies.
+- Using [Eio.Stream](https://ocaml-multicore.github.io/eio/eio/Eio/Stream/index.html) to accumulate responses.
+- Added `PAGE_SIZE` cli parameter.
+- Added `--timeout` / `-T` CLI arg (default 600s): per-request timeout in seconds passed to the HTTP fetcher.
+- Added `--max-retries` / `-r` CLI arg (default 3): number of retry attempts on transient failures or timeouts.
+- Added per-request timeout and exponential-backoff retry in `Http_util.fetch` using `Eio.Time.Timeout`.
+
 ## 0.0.8
 
 - Replaced deprecated `Mirage_crypto_rng_eio.run` with `Mirage_crypto_rng_unix.use_default` from `mirage-crypto-rng.unix`.

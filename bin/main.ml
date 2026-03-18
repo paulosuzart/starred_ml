@@ -1,8 +1,4 @@
-open Cohttp_eio
-open Starred_ml.Util
-open Starred_ml.Http_util
 open Cmdliner
-module Github = Starred_ml.Github
 
 let () = Logs.set_reporter (Logs_fmt.reporter ())
 and () = Logs_threaded.enable ()
@@ -46,35 +42,34 @@ module Render_cli = struct
       & opt string "https://api.github.com/user/starred"
       & info [ "u"; "url" ] ~env ~docv:"GITHUB_URL" ~doc)
 
-  let fetch (max_pages : int option) url token template =
-    try
-      Eio_main.run @@ fun env ->
-      Mirage_crypto_rng_unix.use_default ();
-      let client =
-        Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
-      in
-      Eio.Switch.run @@ fun sw ->
-      let rec fetch_github l acc curr_page =
-        match fetch ~sw l client token with
-        | Some (r, Some next_url)
-          when Option.value ~default:max_int max_pages >= curr_page ->
-            fetch_github next_url (acc @ Github.from_string r) (curr_page + 1)
-        | Some (r, _) -> acc @ Github.from_string r
-        | None -> acc
-      in
-      let content = fetch_github (Format.sprintf "%s?per_page=100" url) [] 1 in
-      Eio.Stdenv.stdout env
-      |> Eio.Flow.copy_string @@ print_content content template
-    with
-    | Failure msg ->
-      Printf.eprintf "Error: %s\n" msg;
-      exit 1
-    | exn ->
-      Printf.eprintf "Fatal: %s\n" (Printexc.to_string exn);
-      Printexc.print_backtrace stderr;
-      exit 1
+  let page_size =
+    let doc =
+      "Number of results per page returned by the GitHub API. Must be between \
+       1 and 100. Higher values reduce the number of HTTP requests required to \
+       fetch all starred repositories."
+    in
+    Arg.(value & opt int 100 & info [ "p"; "page-size" ] ~docv:"PAGE_SIZE" ~doc)
 
-  let fetch_t = Term.(const fetch $ max_pages $ url $ token $ template)
+  let timeout =
+    let doc =
+      "Per-request timeout in seconds. If a GitHub API request (including \
+       reading the response body) does not complete within this duration it is \
+       cancelled and retried up to --max-retries times."
+    in
+    Arg.(value & opt float 600.0 & info [ "T"; "timeout" ] ~docv:"SECONDS" ~doc)
+
+  let max_retries =
+    let doc =
+      "Maximum number of times a failed or timed-out request is retried before \
+       the command exits with an error."
+    in
+    Arg.(
+      value & opt int 3 & info [ "r"; "max-retries" ] ~docv:"MAX_RETRIES" ~doc)
+
+  let fetch_t =
+    Term.(
+      const Fetcher.run $ max_pages $ page_size $ timeout $ max_retries $ url
+      $ token $ template)
 
   let cmd =
     let doc = "Syncs Github starred items for the authenticated user" in

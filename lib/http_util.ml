@@ -19,38 +19,76 @@ let https ~authenticator =
 
 (** Github uses rel links to indicate the next page. It's better to rely on them
     instead of keeping a page counter *)
+let next_re = Re2.create_exn "<([^;]+)>; rel=\"next\""
+
 let next_link s =
-  Eio.traceln "%s" @@ Http.Header.to_string s;
   match Http.Header.get s "Link" with
   | None -> None
-  | Some l ->
-      let re = Re2.create_exn "<([^;]+)>; rel=\"next\"" in
-      let link =
-        try Some (Re2.find_first_exn ~sub:(`Index 1) re l)
-        with Re2.Exceptions.Regex_match_failed _ -> None
-      in
-      link
+  | Some l -> (
+      try Some (Re2.find_first_exn ~sub:(`Index 1) next_re l)
+      with Re2.Exceptions.Regex_match_failed _ -> None)
 
-let handle_status status =
+let classify_status status =
   match status with
-  | `OK -> ()
+  | `OK -> `Ok
   | `Unauthorized ->
-      failwith
+      `Fatal
         (Http.Status.to_string status ^ ". Please check the provided token.")
-  | #Http.Status.client_error | #Http.Status.server_error ->
-      failwith (Http.Status.to_string status)
-  | status ->
-      raise
-        (Invalid_argument
-           (Printf.sprintf "Catastrophic failure: unexpected status %s"
-              (Http.Status.to_string status)))
+  | `Too_many_requests -> `Transient (Http.Status.to_string status)
+  | #Http.Status.server_error -> `Transient (Http.Status.to_string status)
+  | #Http.Status.client_error -> `Fatal (Http.Status.to_string status)
+  | s ->
+      `Fatal (Printf.sprintf "Unexpected status %s" (Http.Status.to_string s))
 
-let fetch ~sw api_url client token =
+type fetch_config = {
+  timeout_s : float;
+  max_retries : int;
+  backoff_base_s : float;
+}
+
+let retry ~sleep_fn ~config ~attempt =
+  let rec loop retries delay =
+    match attempt () with
+    | exception Eio.Time.Timeout ->
+        if retries = 0 then failwith "Request timed out after all retries"
+        else (
+          sleep_fn delay;
+          loop (retries - 1) (delay *. 2.0))
+    | exception (Eio.Io _ as e) ->
+        if retries = 0 then raise e
+        else (
+          sleep_fn delay;
+          loop (retries - 1) (delay *. 2.0))
+    | status, body_str, next_url -> (
+        match classify_status status with
+        | `Ok -> Some (body_str, next_url)
+        | `Fatal msg -> failwith msg
+        | `Transient msg ->
+            if retries = 0 then failwith (msg ^ " after all retries")
+            else (
+              sleep_fn delay;
+              loop (retries - 1) (delay *. 2.0)))
+  in
+  loop config.max_retries config.backoff_base_s
+
+let fetch ~sw ~clock ~config api_url client token =
   let headers =
     Http.Header.of_list [ ("Authorization", Format.sprintf "Bearer %s" token) ]
   in
-  let resp, body = Client.get ~headers ~sw client (Uri.of_string api_url) in
-  handle_status resp.status;
-  Some
-    ( Eio.Buf_read.(parse_exn take_all) body ~max_size:max_int,
-      next_link resp.headers )
+  let timeout = Eio.Time.Timeout.seconds clock config.timeout_s in
+  let attempt () =
+    Eio.Time.Timeout.run_exn timeout (fun () ->
+        let resp, body =
+          Client.get ~headers ~sw client (Uri.of_string api_url)
+        in
+        let body_str =
+          Eio.Buf_read.(parse_exn take_all) body ~max_size:max_int
+        in
+        ( resp.Http.Response.status,
+          body_str,
+          next_link resp.Http.Response.headers ))
+  in
+  let sleep_fn delay =
+    Eio.Time.Mono.sleep clock (delay +. 0.1 +. Random.float 0.9)
+  in
+  retry ~sleep_fn ~config ~attempt
