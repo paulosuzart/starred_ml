@@ -35,32 +35,44 @@ let run (max_pages : int option) url token template =
       Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
     in
     Eio.Switch.run @@ fun sw ->
-    (* [fetch_github l acc curr_page frame] recursively pages through the
-       Github starred API starting at URL [l], accumulating parsed repos in
-       [acc].
-
-       [curr_page] tracks the logical page number so it can be compared
-       against [max_pages]: once [curr_page] exceeds the limit, or the
-       response carries no [next] link, recursion stops.
-
-       [frame] is an ever-incrementing counter passed solely to advance the
-       terminal spinner; it has no effect on the fetching logic. *)
-    let rec fetch_github l acc curr_page frame =
-      show_progress frame curr_page max_pages;
-      let result =
-        Eio.Fiber.fork_promise ~sw (fun () -> fetch ~sw l client token)
-        |> Eio.Promise.await_exn
-      in
-      match result with
-      | Some (r, Some next_url)
-        when Option.value ~default:max_int max_pages > curr_page ->
-          fetch_github next_url
-            (acc @ Github.from_string r)
-            (curr_page + 1) (frame + 1)
-      | Some (r, _) -> acc @ Github.from_string r
-      | None -> acc
+    (* Stream carries one page-batch per item; None signals end-of-stream. *)
+    let stream : Github.starred list option Eio.Stream.t =
+      Eio.Stream.create 2
     in
-    let content = fetch_github (Format.sprintf "%s?per_page=100" url) [] 1 0 in
+    (* Producer fiber: pages through the API, pushes batches onto the stream.
+       Uses [Eio.Fiber.fork ~sw] (fire-and-forget): exceptions cancel the
+       switch, which unblocks [Eio.Stream.take] in the consumer automatically
+       via structured concurrency — no extra error handling needed. *)
+    Eio.Fiber.fork ~sw (fun () ->
+        let rec produce url curr_page frame =
+          show_progress frame curr_page max_pages;
+          match fetch ~sw url client token with
+          | Some (body, next_url_opt) -> (
+              Eio.Stream.add stream (Some (Github.from_string body));
+              let within_limit =
+                Option.value ~default:max_int max_pages > curr_page
+              in
+              match next_url_opt with
+              | Some next_url when within_limit ->
+                  produce next_url (curr_page + 1) (frame + 1)
+              | _ -> ())
+          | None -> ()
+        in
+        produce (Format.sprintf "%s?per_page=100" url) 1 0;
+        Eio.Stream.add stream None);
+    (* Consumer: drains the stream into a Queue (O(1) push per item).
+       [Queue.to_seq] traverses front-to-back, preserving GitHub insertion
+       order with no reversal needed. *)
+    let q = Queue.create () in
+    let rec consume () =
+      match Eio.Stream.take stream with
+      | Some batch ->
+          List.iter (fun item -> Queue.push item q) batch;
+          consume ()
+      | None -> ()
+    in
+    consume ();
+    let content = Queue.to_seq q |> List.of_seq in
     clear_progress ();
     print_summary (List.length content) (Unix.gettimeofday () -. t0);
     Eio.Stdenv.stdout env
