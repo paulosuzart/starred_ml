@@ -35,6 +35,7 @@ let run (max_pages : int option) (page_size : int) url token template =
   try
     Eio_main.run @@ fun env ->
     Mirage_crypto_rng_unix.use_default ();
+    let clock = env#mono_clock in
     let client =
       Client.make ~https:(Some (https ~authenticator:null_auth)) env#net
     in
@@ -50,7 +51,7 @@ let run (max_pages : int option) (page_size : int) url token template =
     Eio.Fiber.fork ~sw (fun () ->
         let rec produce url curr_page frame =
           show_progress frame curr_page max_pages;
-          match fetch ~sw url client token with
+          match fetch ~sw ~clock ~config:default_config url client token with
           | Some (body, next_url_opt) -> (
               Eio.Stream.add stream (Some (Github.from_string body));
               let within_limit =

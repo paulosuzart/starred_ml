@@ -75,25 +75,33 @@ let test_next_page () =
     "A page with next link returns Some url" (Some "http://s")
     (next_link @@ Http.Header.of_list [ ("Link", "<http://s>; rel=\"next\"") ])
 
-(** [test_unauthorized] checks that a 401 response raises [Failure] with a
-    message instructing the user to check their token. *)
+(** [test_unauthorized] checks that a 401 response is classified as a fatal
+    error with a message instructing the user to check their token. *)
 let test_unauthorized () =
-  Alcotest.check_raises "401 raises Failure with token hint"
-    (Failure "401 Unauthorized. Please check the provided token.") (fun () ->
-      Http_util.handle_status `Unauthorized)
+  Alcotest.(check string)
+    "401 is Fatal with token hint"
+    "401 Unauthorized. Please check the provided token."
+    (match Http_util.classify_status `Unauthorized with
+    | `Fatal msg -> msg
+    | _ -> "unexpected variant")
 
-(** [test_server_error] checks that a 5xx response raises [Failure] with the
-    HTTP status string, so the caller can surface it directly to the user. *)
+(** [test_server_error] checks that a 5xx response is classified as transient,
+    meaning the caller can retry the request. *)
 let test_server_error () =
-  Alcotest.check_raises "500 raises Failure with status string"
-    (Failure "500 Internal Server Error") (fun () ->
-      Http_util.handle_status `Internal_server_error)
+  Alcotest.(check string)
+    "500 is Transient with status string" "500 Internal Server Error"
+    (match Http_util.classify_status `Internal_server_error with
+    | `Transient msg -> msg
+    | _ -> "unexpected variant")
 
 (** [test_client_error] checks that a generic 4xx response (e.g. 403 Forbidden)
-    raises [Failure] with the HTTP status string. *)
+    is classified as a fatal error with the HTTP status string. *)
 let test_client_error () =
-  Alcotest.check_raises "403 raises Failure with status string"
-    (Failure "403 Forbidden") (fun () -> Http_util.handle_status `Forbidden)
+  Alcotest.(check string)
+    "403 is Fatal with status string" "403 Forbidden"
+    (match Http_util.classify_status `Forbidden with
+    | `Fatal msg -> msg
+    | _ -> "unexpected variant")
 
 let () =
   run "Starred_ml"
