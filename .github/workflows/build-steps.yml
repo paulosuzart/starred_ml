@@ -1,0 +1,40 @@
+name: Build Steps (reusable)
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v4
+        with:
+          path: ${{ github.event.repository.name }}
+
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5.4.1"
+
+      - run: opam install . --deps-only --with-test
+        working-directory: ${{ github.event.repository.name }}
+
+      - run: opam exec -- dune build
+        working-directory: ${{ github.event.repository.name }}
+
+      - run: opam exec -- dune runtest
+        working-directory: ${{ github.event.repository.name }}
+
+      - run: opam install dune-release
+        working-directory: ${{ github.event.repository.name }}
+
+      - run: opam exec -- dune-release lint
+        working-directory: ${{ github.event.repository.name }}

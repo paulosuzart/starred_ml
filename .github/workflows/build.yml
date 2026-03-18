@@ -1,8 +1,9 @@
-name: Branch CI
+name: Build & Test
 
 on:
+  workflow_dispatch:
   push:
-    branches-ignore:
+    branches:
       - main
 
 jobs:

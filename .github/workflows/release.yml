@@ -1,4 +1,4 @@
-name: Builds, tests & co
+name: Release
 
 on:
   workflow_dispatch:
@@ -10,10 +10,7 @@ permissions:
   id-token: write
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-
+  release:
     runs-on: ubuntu-22.04
 
     steps:
@@ -27,19 +24,13 @@ jobs:
         with:
           ocaml-compiler: "5.4.1"
 
-      - run: opam install . --deps-only --with-test
+      - run: opam install . --deps-only
         working-directory: ${{ github.event.repository.name }}
 
       - run: opam exec -- dune build
         working-directory: ${{ github.event.repository.name }}
 
-      - run: opam exec -- dune runtest
-        working-directory: ${{ github.event.repository.name }}
-
       - run: opam install dune-release
-        working-directory: ${{ github.event.repository.name }}
-
-      - run: opam exec -- dune-release lint
         working-directory: ${{ github.event.repository.name }}
 
       - run: |
