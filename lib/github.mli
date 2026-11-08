@@ -7,6 +7,7 @@ type starred = {
   language : string option;
   html_url : string;
   owner : owner;
+  archived : bool;
 }
 
 type starred_response = starred list

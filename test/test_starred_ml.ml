@@ -25,6 +25,7 @@ let test_group () =
       language = Some "Java";
       html_url = "example.com";
       owner = { login = "auser" };
+      archived = false;
     }
   and sample_java_repo2 =
     {
@@ -34,6 +35,7 @@ let test_group () =
       language = Some "Java";
       html_url = "example.com";
       owner = { login = "viola" };
+      archived = false;
     }
   and sample_ocaml_repo =
     {
@@ -43,6 +45,7 @@ let test_group () =
       language = Some "Ocaml";
       html_url = "example.com";
       owner = { login = "bar" };
+      archived = false;
     }
   in
   Alcotest.(check starred_testable)

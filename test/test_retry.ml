@@ -46,8 +46,8 @@ let test_fatal_no_retry () =
   let sleep_fn d = sleeps := d :: !sleeps in
   let attempt = make_attempt [ `Return (`Unauthorized, "", None) ] in
   check_raises "raises on fatal"
-    (Failure "401 Unauthorized. Please check the provided token.")
-    (fun () -> ignore (retry ~sleep_fn ~config:base_config ~attempt));
+    (Failure "401 Unauthorized. Please check the provided token.") (fun () ->
+      ignore (retry ~sleep_fn ~config:base_config ~attempt));
   check int "never slept" 0 (List.length !sleeps)
 
 (** All retries exhausted on transient errors raises Failure. *)
