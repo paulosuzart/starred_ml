@@ -1,3 +1,7 @@
+## 0.1.0
+- Bumped several versions including OCaml 5.5.0.
+- In this release, archived repositories are suppressed.
+
 ## 0.0.9
 
 - Extracted HTTP fetch logic into a dedicated `Fetcher` module (`bin/fetcher.ml`), separating it from CLI argument definitions in `bin/main.ml`.
