@@ -80,7 +80,10 @@ let run (max_pages : int option) (page_size : int) (timeout_s : float)
       | None -> ()
     in
     consume ();
-    let content = Queue.to_seq q |> List.of_seq in
+    let content =
+      Queue.to_seq q |> List.of_seq
+      |> List.filter (fun (i : Github.starred) -> not i.archived)
+    in
     clear_progress ();
     print_summary (List.length content) (Unix.gettimeofday () -. t0);
     Eio.Stdenv.stdout env
